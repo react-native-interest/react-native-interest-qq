@@ -1,0 +1,7 @@
+rootProject.name = 'example'
+
+
+include ':react-native-interest-qq'
+project(':react-native-interest-qq').projectDir = new File(rootProject.projectDir, '../../android')
+
+include ':app'
