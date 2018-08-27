@@ -10,7 +10,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-
+/**
+ * Created by iwangx on 2018/8/25.
+ */
 public class InterestQQPackage implements ReactPackage {
 
     @Override
