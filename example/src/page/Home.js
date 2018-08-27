@@ -58,7 +58,7 @@ class Home extends PureComponent {
         RNInterestQQ.shareToQQ(
             "这里是分享标题",
             "desc",
-            "http://www.qq.com/news/1.html",
+            "http://text/plain",
             "",
             "appname",
             0

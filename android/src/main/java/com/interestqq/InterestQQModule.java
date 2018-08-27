@@ -26,6 +26,7 @@ import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.UiThreadUtil;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.views.imagehelper.ResourceDrawableIdHelper;
@@ -176,7 +177,7 @@ public class InterestQQModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void shareToQQ(String title,String desc,String url,String imgUrl,String appName, int ext,final Promise promise){
+    public void shareToQQ(String title,String desc,String url,String imgUrl,String appName, int ext,ArrayList imgArr,final Promise promise){
         final Activity currentActivity = getCurrentActivity();
         final Bundle params = new Bundle();
         mPromise = promise;
@@ -197,6 +198,25 @@ public class InterestQQModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
+    public void shareToQzone(String title,String desc,String url,ArrayList<String> imgArr,final Promise promise){
+        final Activity currentActivity = getCurrentActivity();
+        final Bundle params = new Bundle();
+        mPromise = promise;
+        params.putInt(QzoneShare.SHARE_TO_QZONE_KEY_TYPE,QzoneShare.SHARE_TO_QZONE_TYPE_IMAGE_TEXT );
+        params.putString(QzoneShare.SHARE_TO_QQ_TITLE, title);//必填
+        params.putString(QzoneShare.SHARE_TO_QQ_SUMMARY, desc);//选填
+        params.putString(QzoneShare.SHARE_TO_QQ_TARGET_URL, url);//必填
+        params.putStringArrayList(QzoneShare.SHARE_TO_QQ_IMAGE_URL, imgArr);
+        Runnable zoneRunnable = new Runnable() {
+            @Override
+            public void run() {
+                mTencent.shareToQzone(currentActivity, params,qZoneShareListener);
+            }
+        };
+        UiThreadUtil.runOnUiThread(zoneRunnable);
+    }
+
+    @ReactMethod
     public void shareText(String text,int shareScene, final Promise promise) {
         final Activity currentActivity = getCurrentActivity();
         if (null == currentActivity) {
@@ -209,19 +229,7 @@ public class InterestQQModule extends ReactContextBaseJavaModule {
             case ShareScene.QQ:
                 promise.reject("500","Android 不支持分享文字到 QQ");
                 break;
-//            case ShareScene.Favorite:
-//                params.putInt(GameAppOperation.QQFAV_DATALINE_REQTYPE, GameAppOperation.QQFAV_DATALINE_TYPE_TEXT);
-//                params.putString(GameAppOperation.QQFAV_DATALINE_TITLE, appName);
-//                params.putString(GameAppOperation.QQFAV_DATALINE_DESCRIPTION, text);
-//                params.putString(GameAppOperation.QQFAV_DATALINE_APPNAME, appName);
-//                Runnable favoritesRunnable = new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        mTencent.addToQQFavorites(currentActivity, params, addToQQFavoritesListener);
-//                    }
-//                };
-//                UiThreadUtil.runOnUiThread(favoritesRunnable);
-//                break;
+
             case ShareScene.QQZone:
                 params.putInt(QzoneShare.SHARE_TO_QZONE_KEY_TYPE, QzonePublish.PUBLISH_TO_QZONE_TYPE_PUBLISHMOOD);
                 params.putString(QzoneShare.SHARE_TO_QQ_TITLE, text);
@@ -266,23 +274,7 @@ public class InterestQQModule extends ReactContextBaseJavaModule {
                 };
                 UiThreadUtil.runOnUiThread(qqRunnable);
                 break;
-            case ShareScene.Favorite:
-//                ArrayList<String> imageUrls = new ArrayList<String>();
-//                imageUrls.add(image);
-//                params.putInt(GameAppOperation.QQFAV_DATALINE_REQTYPE, GameAppOperation.QQFAV_DATALINE_TYPE_IMAGE_TEXT);
-//                params.putString(GameAppOperation.QQFAV_DATALINE_TITLE, title);
-//                params.putString(GameAppOperation.QQFAV_DATALINE_DESCRIPTION, description);
-//                params.putString(GameAppOperation.QQFAV_DATALINE_IMAGEURL,image);
-//                params.putString(GameAppOperation.QQFAV_DATALINE_APPNAME, appName);
-//                params.putStringArrayList(GameAppOperation.QQFAV_DATALINE_FILEDATA,imageUrls);
-//                Runnable favoritesRunnable = new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        mTencent.addToQQFavorites(currentActivity, params, addToQQFavoritesListener);
-//                    }
-//                };
-//                UiThreadUtil.runOnUiThread(favoritesRunnable);
-                break;
+
             case ShareScene.QQZone:
                 params.putInt(QQShare.SHARE_TO_QQ_KEY_TYPE, QQShare.SHARE_TO_QQ_TYPE_IMAGE);
                 params.putString(QQShare.SHARE_TO_QQ_IMAGE_LOCAL_URL,image);
@@ -333,22 +325,7 @@ public class InterestQQModule extends ReactContextBaseJavaModule {
                 };
                 UiThreadUtil.runOnUiThread(qqRunnable);
                 break;
-            case ShareScene.Favorite:
-//                image = processImage(image);
-//                params.putInt(GameAppOperation.QQFAV_DATALINE_REQTYPE, GameAppOperation.QQFAV_DATALINE_TYPE_DEFAULT);
-//                params.putString(GameAppOperation.QQFAV_DATALINE_TITLE, title);
-//                params.putString(GameAppOperation.QQFAV_DATALINE_DESCRIPTION,description);
-//                params.putString(GameAppOperation.QQFAV_DATALINE_IMAGEURL,image);
-//                params.putString(GameAppOperation.QQFAV_DATALINE_URL,url);
-//                params.putString(GameAppOperation.QQFAV_DATALINE_APPNAME, appName);
-//                Runnable favoritesRunnable = new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        mTencent.addToQQFavorites(currentActivity, params, addToQQFavoritesListener);
-//                    }
-//                };
-//                UiThreadUtil.runOnUiThread(favoritesRunnable);
-                break;
+
             case ShareScene.QQZone:
                 image = processImage(image);
                 ArrayList<String> imageUrls = new ArrayList<String>();
@@ -404,23 +381,7 @@ public class InterestQQModule extends ReactContextBaseJavaModule {
                 };
                 UiThreadUtil.runOnUiThread(qqRunnable);
                 break;
-//            case ShareScene.Favorite:
-//                image = processImage(image);
-//                params.putInt(GameAppOperation.QQFAV_DATALINE_REQTYPE, GameAppOperation.QQFAV_DATALINE_TYPE_DEFAULT);
-//                params.putString(GameAppOperation.QQFAV_DATALINE_TITLE, title);
-//                params.putString(GameAppOperation.QQFAV_DATALINE_DESCRIPTION,description);
-//                params.putString(GameAppOperation.QQFAV_DATALINE_IMAGEURL,image);
-//                params.putString(GameAppOperation.QQFAV_DATALINE_URL,url);
-//                params.putString(GameAppOperation.QQFAV_DATALINE_APPNAME, appName);
-//                params.putString(GameAppOperation.QQFAV_DATALINE_AUDIOURL,flashUrl);
-//                Runnable favoritesRunnable = new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        mTencent.addToQQFavorites(currentActivity, params, addToQQFavoritesListener);
-//                    }
-//                };
-//                UiThreadUtil.runOnUiThread(favoritesRunnable);
-//                break;
+
             case ShareScene.QQZone:
                 image = processImage(image);
                 ArrayList<String> imageUrls = new ArrayList<String>();
@@ -459,9 +420,11 @@ public class InterestQQModule extends ReactContextBaseJavaModule {
             case ShareScene.QQ:
                 promise.reject("500","Android 不支持分享视频到 QQ");
                 break;
+
             case ShareScene.Favorite:
                 promise.reject("500","Android 不支持收藏视频到 QQ");
                 break;
+
             case ShareScene.QQZone:
                 ArrayList<String> imageUrls = new ArrayList<String>();
                 imageUrls.add(image);
