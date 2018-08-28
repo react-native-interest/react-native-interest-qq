@@ -29,7 +29,7 @@ NSString *appId = @"";
     RCTPromiseRejectBlock shareReject;
 }
 
-RCT_EXPORT_MODULE()
+RCT_EXPORT_MODULE(RNInterestQQ)
 
 - (instancetype)init {
     self = [super init];
