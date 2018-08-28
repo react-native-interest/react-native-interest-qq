@@ -23,19 +23,18 @@
 | 删除缓存                 | ✅ |     ❌     | deleteCachedToken |
 | 分享文本消息             | ✅ |   ❌      | shareText |
 | 分享图片（本地图片）     | ✅ |    ✅     | shareImage |
-| 分享多图                 | ✅ |  ✅       | shareMutileImage |
-| 分享新闻（本地图片）消息 | ✅ |      ✅   | shareNewsLocal |
-| 分享新闻（网络图片）消息 | ✅ |     ✅    | shareNewsWeb |
+| 分享多图                 | ✅ |    ❌     | shareMutileImage |
+| 分享新闻（本地/网络图片）消息 | ✅ |      ✅   | shareNews |
 | 分享音频消息             | ✅ |   ✅      | shareAudio |
-| 分享视频消息             | ✅ |     ✅    | shareVideo |
-| 分享文件（数据线）       | ✅ |     ✅    | shareFile |
-| 添加好友                 | ✅ |    ✅     | addFriend |
+| 分享视频消息             | ✅ |     ❌   | shareVideo |
+| 分享文件（数据线）       | ✅ |      ❌   | shareFile |
+| 添加好友                 | ✅ |      ❌     | addFriend |
 | 分享纯文本到QZone        | ✅ |    ❌     | shareTextToQZone |
 | 分享图片到QZone          | ✅ |   ✅      | shareImgToQZone |
 | 分享视频到QZone          | ✅ |     ✅    | shareVideoToQZone |
 | 获取用户信息             | ✅ |    ✅     | getInfo |
 | UnionID                  | ✅ |   ✅      | requestUnionId |
-| 一键加群                 | ✅ |    ✅     | joinGroup |
+| 一键加群                 | ✅ |    ❌     | joinGroup |
 | 游戏绑定公会群           | ✅ |     ❌      | gameConsortiumBindingGroup |
 | 分享文本+图片+链接       |❌|✅|shareToQQ
 | 分享文本+图片+链接到QZone|❌|✅| shareToQzone
