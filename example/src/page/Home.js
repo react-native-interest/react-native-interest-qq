@@ -55,16 +55,18 @@ class Home extends PureComponent {
 
 
     shareToQQ = ()=>{
-        RNInterestQQ.shareToQQ(
-            "这里是分享标题",
-            "desc",
-            "http://text/plain",
-            "",
-            "appname",
-            0
-        ).catch(e=>{
-            console.log(e);
-        });
+        // RNInterestQQ.shareToQQ(
+        //     "这里是分享标题",
+        //     "desc",
+        //     "http://text/plain",
+        //     "",
+        //     "appname",
+        //     0
+        // ).catch(e=>{
+        //     console.log(e);
+        // });
+
+        RNInterestQQ.shareText("123213123",0)
     };
 
     render() {

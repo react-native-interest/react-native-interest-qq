@@ -31,6 +31,7 @@ import com.facebook.react.bridge.UiThreadUtil;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.views.imagehelper.ResourceDrawableIdHelper;
 
+import com.tencent.connect.UnionInfo;
 import com.tencent.connect.common.Constants;
 import com.tencent.connect.share.QQShare;
 import com.tencent.connect.share.QzonePublish;
@@ -62,7 +63,6 @@ import org.json.JSONObject;
 class ShareScene {
     public static final int QQ = 0;
     public static final int QQZone = 1;
-    public static final int Favorite = 2;
 }
 
 /**
@@ -92,9 +92,6 @@ public class InterestQQModule extends ReactContextBaseJavaModule {
                 if (requestCode == Constants.REQUEST_QQ_SHARE) {
                     Tencent.onActivityResultData(requestCode, resultCode, intent, qqShareListener);
                 }
-                if (requestCode == Constants.REQUEST_QQ_FAVORITES) {
-                    Tencent.onActivityResultData(requestCode, resultCode, intent, addToQQFavoritesListener);
-                }
             }
         }
     };
@@ -116,7 +113,7 @@ public class InterestQQModule extends ReactContextBaseJavaModule {
 
     @Override
     public String getName() {
-        return "RNInterestQQ";
+        return "QQSDK";
     }
 
     @Override
@@ -148,7 +145,7 @@ public class InterestQQModule extends ReactContextBaseJavaModule {
 
 
     @ReactMethod
-    public void login(final Promise promise){
+    public void ssoLogin(final Promise promise){
         final Activity currentActivity = getCurrentActivity();
         if (null == currentActivity) {
             promise.reject("405",ACTIVITY_DOES_NOT_EXIST);
@@ -166,7 +163,7 @@ public class InterestQQModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void loginOut(Promise promise) {
+    public void logout(Promise promise) {
         Activity currentActivity = getCurrentActivity();
         if (null == currentActivity) {
             promise.reject("405",ACTIVITY_DOES_NOT_EXIST);
@@ -176,18 +173,38 @@ public class InterestQQModule extends ReactContextBaseJavaModule {
         promise.resolve(true);
     }
 
+    /**
+     *
+     * */
     @ReactMethod
-    public void shareToQQ(String title,String desc,String url,String imgUrl,String appName, int ext,ArrayList imgArr,final Promise promise){
+    public void shareToQQ(String title,String desc,String url,String imgUrl,String appName,final Promise promise){
         final Activity currentActivity = getCurrentActivity();
         final Bundle params = new Bundle();
         mPromise = promise;
         params.putInt(QQShare.SHARE_TO_QQ_KEY_TYPE, QQShare.SHARE_TO_QQ_TYPE_DEFAULT);
-        params.putString(QQShare.SHARE_TO_QQ_TITLE, title);
-        params.putString(QQShare.SHARE_TO_QQ_SUMMARY,  desc);
-        params.putString(QQShare.SHARE_TO_QQ_TARGET_URL,  url);
-        params.putString(QQShare.SHARE_TO_QQ_IMAGE_URL,imgUrl);
-        params.putString(QQShare.SHARE_TO_QQ_APP_NAME,  appName);
-        params.putInt(QQShare.SHARE_TO_QQ_EXT_INT,  ext);
+        if(!title.equals("")){
+            params.putString(QQShare.SHARE_TO_QQ_TITLE, title);
+        }
+        if(url.equals("") && URLUtil.isNetworkUrl(url)){
+            params.putString(QQShare.SHARE_TO_QQ_TARGET_URL,  url);
+        }else{
+            promise.reject("406",ACTIVITY_DOES_NOT_EXIST);
+            return;
+        }
+        if(desc.equals("")){
+            params.putString(QQShare.SHARE_TO_QQ_SUMMARY,  desc);
+        }
+        if(imgUrl.equals("")){
+            if(URLUtil.isNetworkUrl(imgUrl)) {
+                params.putString(QQShare.SHARE_TO_QQ_IMAGE_URL,imgUrl);
+            } else {
+                params.putString(QQShare.SHARE_TO_QQ_IMAGE_LOCAL_URL,processImage(imgUrl));
+            }
+        }
+        if(appName.equals("")){
+            params.putString(QQShare.SHARE_TO_QQ_APP_NAME,  appName);
+        }
+        params.putInt(QQShare.SHARE_TO_QQ_EXT_INT,  2);
         Runnable zoneRunnable = new Runnable() {
             @Override
             public void run() {
@@ -203,9 +220,9 @@ public class InterestQQModule extends ReactContextBaseJavaModule {
         final Bundle params = new Bundle();
         mPromise = promise;
         params.putInt(QzoneShare.SHARE_TO_QZONE_KEY_TYPE,QzoneShare.SHARE_TO_QZONE_TYPE_IMAGE_TEXT );
-        params.putString(QzoneShare.SHARE_TO_QQ_TITLE, title);//必填
-        params.putString(QzoneShare.SHARE_TO_QQ_SUMMARY, desc);//选填
-        params.putString(QzoneShare.SHARE_TO_QQ_TARGET_URL, url);//必填
+        params.putString(QzoneShare.SHARE_TO_QQ_TITLE, title);
+        params.putString(QzoneShare.SHARE_TO_QQ_SUMMARY, desc);
+        params.putString(QzoneShare.SHARE_TO_QQ_TARGET_URL, url);
         params.putStringArrayList(QzoneShare.SHARE_TO_QQ_IMAGE_URL, imgArr);
         Runnable zoneRunnable = new Runnable() {
             @Override
@@ -219,7 +236,9 @@ public class InterestQQModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void shareText(String text,int shareScene, final Promise promise) {
         final Activity currentActivity = getCurrentActivity();
+
         if (null == currentActivity) {
+
             promise.reject("405",ACTIVITY_DOES_NOT_EXIST);
             return;
         }
@@ -257,14 +276,19 @@ public class InterestQQModule extends ReactContextBaseJavaModule {
             return;
         }
         mPromise = promise;
-        image = processImage(image);
         final Bundle params = new Bundle();
         switch (shareScene) {
             case ShareScene.QQ:
                 params.putInt(QQShare.SHARE_TO_QQ_KEY_TYPE, QQShare.SHARE_TO_QQ_TYPE_IMAGE);
+                if(URLUtil.isNetworkUrl(image)) {
+                    params.putString(QQShare.SHARE_TO_QQ_IMAGE_URL,image);
+                } else {
+                    params.putString(QQShare.SHARE_TO_QQ_IMAGE_LOCAL_URL,processImage(image));
+                }
                 params.putString(QQShare.SHARE_TO_QQ_IMAGE_LOCAL_URL,image);
                 params.putString(QQShare.SHARE_TO_QQ_TITLE, title);
                 params.putString(QQShare.SHARE_TO_QQ_SUMMARY, description);
+                params.putInt(QQShare.SHARE_TO_QQ_EXT_INT,  2);
                 Runnable qqRunnable = new Runnable() {
 
                     @Override
@@ -276,13 +300,17 @@ public class InterestQQModule extends ReactContextBaseJavaModule {
                 break;
 
             case ShareScene.QQZone:
-                params.putInt(QQShare.SHARE_TO_QQ_KEY_TYPE, QQShare.SHARE_TO_QQ_TYPE_IMAGE);
-                params.putString(QQShare.SHARE_TO_QQ_IMAGE_LOCAL_URL,image);
-                params.putString(QQShare.SHARE_TO_QQ_TITLE, title);
-                params.putString(QQShare.SHARE_TO_QQ_SUMMARY, description);
-                params.putInt(QQShare.SHARE_TO_QQ_EXT_INT,QQShare.SHARE_TO_QQ_FLAG_QZONE_AUTO_OPEN);
-                Runnable zoneRunnable = new Runnable() {
+                params.putInt(QzoneShare.SHARE_TO_QZONE_KEY_TYPE, QzoneShare.SHARE_TO_QZONE_TYPE_IMAGE);
+                if(URLUtil.isNetworkUrl(image)) {
+                    params.putString(QzoneShare.SHARE_TO_QQ_IMAGE_URL,image);
+                } else {
+                    params.putString(QzoneShare.SHARE_TO_QQ_IMAGE_LOCAL_URL,processImage(image));
+                }
+                params.putString(QzoneShare.SHARE_TO_QQ_TITLE, title);
+                params.putString(QzoneShare.SHARE_TO_QQ_SUMMARY, description);
+                params.putInt(QzoneShare.SHARE_TO_QQ_EXT_INT,QzoneShare.SHARE_TO_QZONE_TYPE_NO_TYPE);
 
+                Runnable zoneRunnable = new Runnable() {
                     @Override
                     public void run() {
                         mTencent.shareToQQ(currentActivity,params,qqShareListener);
@@ -316,6 +344,7 @@ public class InterestQQModule extends ReactContextBaseJavaModule {
                 params.putString(QQShare.SHARE_TO_QQ_TITLE, title);
                 params.putString(QQShare.SHARE_TO_QQ_TARGET_URL, url);
                 params.putString(QQShare.SHARE_TO_QQ_SUMMARY, description);
+                params.putInt(QQShare.SHARE_TO_QQ_EXT_INT,  2);
                 Runnable qqRunnable = new Runnable() {
 
                     @Override
@@ -372,6 +401,7 @@ public class InterestQQModule extends ReactContextBaseJavaModule {
                 params.putString(QQShare.SHARE_TO_QQ_TITLE, title);
                 params.putString(QQShare.SHARE_TO_QQ_TARGET_URL, url);
                 params.putString(QQShare.SHARE_TO_QQ_SUMMARY, description);
+                params.putInt(QQShare.SHARE_TO_QQ_EXT_INT,  2);
                 Runnable qqRunnable = new Runnable() {
 
                     @Override
@@ -421,14 +451,11 @@ public class InterestQQModule extends ReactContextBaseJavaModule {
                 promise.reject("500","Android 不支持分享视频到 QQ");
                 break;
 
-            case ShareScene.Favorite:
-                promise.reject("500","Android 不支持收藏视频到 QQ");
-                break;
-
             case ShareScene.QQZone:
                 ArrayList<String> imageUrls = new ArrayList<String>();
                 imageUrls.add(image);
                 params.putInt(QzoneShare.SHARE_TO_QZONE_KEY_TYPE, QzonePublish.PUBLISH_TO_QZONE_TYPE_PUBLISHVIDEO);
+                params.putString(QzoneShare.SHARE_TO_QQ_TITLE,title);
                 params.putString(QzonePublish.PUBLISH_TO_QZONE_IMAGE_URL, image);
                 params.putString(QzonePublish.PUBLISH_TO_QZONE_SUMMARY,description);
                 params.putString(QzonePublish.PUBLISH_TO_QZONE_VIDEO_PATH,flashUrl);
@@ -447,13 +474,28 @@ public class InterestQQModule extends ReactContextBaseJavaModule {
         }
     }
 
+    @ReactMethod
+    public void requestUnionId(final Promise promise){
+        final Activity currentActivity = getCurrentActivity();
+        mPromise = promise;
+        final UnionInfo unionInfo = new UnionInfo(currentActivity, mTencent.getQQToken());
+
+        Runnable qqRunnable = new Runnable() {
+
+            @Override
+            public void run() {
+                unionInfo.getUnionId(getUnionIdListener);
+            }
+        };
+    }
+
+
     @Nullable
     @Override
     public Map<String, Object> getConstants() {
         final Map<String, Object> constants = new HashMap<>();
         constants.put("QQ", ShareScene.QQ);
         constants.put("QQZone", ShareScene.QQZone);
-        constants.put("Favorite", ShareScene.Favorite);
         return constants;
     }
 
@@ -804,10 +846,12 @@ public class InterestQQModule extends ReactContextBaseJavaModule {
         }
 
     };
+
+
     /**
-     * 添加到QQ收藏监听
+     * 获取unionId监听
      */
-    IUiListener addToQQFavoritesListener = new IUiListener() {
+    IUiListener getUnionIdListener = new IUiListener() {
         @Override
         public void onCancel() {
             mPromise.reject("503",QQFAVORITES_CANCEL);
@@ -815,6 +859,22 @@ public class InterestQQModule extends ReactContextBaseJavaModule {
 
         @Override
         public void onComplete(Object response) {
+            if (null == response) {
+                mPromise.reject("600",QQ_RESPONSE_ERROR);
+                return;
+            }
+            JSONObject jsonResponse = (JSONObject) response;
+            if (jsonResponse.length() == 0) {
+                mPromise.reject("600",QQ_RESPONSE_ERROR);
+                return;
+            }
+            if (initOpenidAndToken(jsonResponse)) {
+                WritableMap map = Arguments.createMap();
+
+                mPromise.resolve(map);
+            } else {
+                mPromise.reject("600",QQ_RESPONSE_ERROR);
+            }
             mPromise.resolve(true);
         }
 
@@ -834,5 +894,62 @@ public class InterestQQModule extends ReactContextBaseJavaModule {
         byteArrayOutputStream.close();
         inputStream.close();
         return byteArrayOutputStream.toByteArray();
+    }
+
+
+    /**
+    * 返回分享到qq默认参数
+    * @param title 标题
+    * @param desc 摘要
+    * @param url 分享的url
+    * @param imgUrl 图片url
+    * @param appName app名称
+    * @param ext QQShare.SHARE_TO_QQ_FLAG_QZONE_AUTO_OPEN，分享时自动打开分享到QZone的对话框。QQShare.SHARE_TO_QQ_FLAG_QZONE_ITEM_HIDE，分享时隐藏分享到QZone按钮。
+    * */
+    private Bundle getShareQQDefaultParams(String title,String desc,String url,String imgUrl,String appName, int ext){
+        final Bundle params = new Bundle();
+        params.putInt(QQShare.SHARE_TO_QQ_KEY_TYPE, QQShare.SHARE_TO_QQ_TYPE_DEFAULT);
+        if(!title.equals("")){
+            params.putString(QQShare.SHARE_TO_QQ_TITLE, title);
+        }
+        if(url.equals("") && URLUtil.isNetworkUrl(url)){
+            params.putString(QQShare.SHARE_TO_QQ_TARGET_URL,  url);
+        }
+        if(desc.equals("")){
+            params.putString(QQShare.SHARE_TO_QQ_SUMMARY,  desc);
+        }
+        if(imgUrl.equals("")){
+            if(URLUtil.isNetworkUrl(imgUrl)) {
+                params.putString(QQShare.SHARE_TO_QQ_IMAGE_URL,imgUrl);
+            } else {
+                params.putString(QQShare.SHARE_TO_QQ_IMAGE_LOCAL_URL,processImage(imgUrl));
+            }
+        }
+        if(appName.equals("")){
+            params.putString(QQShare.SHARE_TO_QQ_APP_NAME,  appName);
+        }
+        if(ext>0){
+            params.putInt(QQShare.SHARE_TO_QQ_EXT_INT,  ext);
+        }
+        return params;
+    }
+
+
+    private Bundle getShareQzoneDefaultParams(String title,String desc,String url,ArrayList<String> imgArr){
+        Bundle params = new Bundle();
+        params.putInt(QzoneShare.SHARE_TO_QZONE_KEY_TYPE,QzoneShare.SHARE_TO_QZONE_TYPE_IMAGE_TEXT );
+        if(!title.equals("")){
+            params.putString(QzoneShare.SHARE_TO_QQ_TITLE, title);
+        }
+        if(url.equals("") && URLUtil.isNetworkUrl(url)){
+            params.putString(QzoneShare.SHARE_TO_QQ_TARGET_URL, url);
+        }
+        if(desc.equals("")){
+            params.putString(QzoneShare.SHARE_TO_QQ_SUMMARY, desc);
+        }
+
+        params.putStringArrayList(QzoneShare.SHARE_TO_QQ_IMAGE_URL, imgArr);
+
+        return  params;
     }
 }
