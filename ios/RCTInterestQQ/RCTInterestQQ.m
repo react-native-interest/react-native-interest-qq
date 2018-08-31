@@ -66,7 +66,7 @@ RCT_EXPORT_METHOD(checkClientInstalled
     }
 }
 
-RCT_EXPORT_METHOD(ssoLogin
+RCT_EXPORT_METHOD(login
                   : (RCTPromiseResolveBlock)resolve
                   : (RCTPromiseRejectBlock)reject) {
     if (nil == tencentOAuth) {
@@ -93,7 +93,7 @@ RCT_EXPORT_METHOD(ssoLogin
     [tencentOAuth authorize:permissions];
 }
 
-RCT_EXPORT_METHOD(logout
+RCT_EXPORT_METHOD(loginOut
                   :(RCTPromiseResolveBlock)resolve
                   :(RCTPromiseRejectBlock)reject) {
     logoutResolve = resolve;
@@ -102,7 +102,7 @@ RCT_EXPORT_METHOD(logout
 }
 
 RCT_EXPORT_METHOD(shareText:(NSString *)text
-                  shareScene:(QQShareScene)scene
+                  shareScene:(NSNumber *)scene
                   :(RCTPromiseResolveBlock)resolve
                   :(RCTPromiseRejectBlock)reject) {
     shareReject = reject;

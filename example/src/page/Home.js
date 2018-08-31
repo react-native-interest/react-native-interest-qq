@@ -33,6 +33,16 @@ class Home extends PureComponent {
 
     }
 
+    checkClientInstalled = ()=>{
+        RNInterestQQ
+            .checkClientInstalled()
+            .then(e=>{
+                Alert.alert(JSON.stringify(e));
+            }).catch(e=>{
+            Alert.alert(JSON.stringify(e))
+        });
+    }
+
     login = ()=>{
         RNInterestQQ
             .login()
@@ -78,6 +88,10 @@ class Home extends PureComponent {
         return (
             <View>
                 <HomeRow
+                    text={"checkClientInstalled"}
+                    onPress={this.checkClientInstalled}
+                />
+                <HomeRow
                     text={"Login"}
                     onPress={this.login}
                 />
@@ -89,6 +103,8 @@ class Home extends PureComponent {
                     text={"shareToQQ"}
                     onPress={this.shareToQQ}
                 />
+
+
             </View>
         )
     }
