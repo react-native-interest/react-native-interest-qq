@@ -8,7 +8,7 @@ import {
 
 const isIOS = Platform.OS==="ios";
 
-const {QQSDK} =  NativeModules;
+const {RNInterestQQ} =  NativeModules;
 
 const PLATFORM_DOES_NOT_METHOD = "Platform does not method.";
 
@@ -16,7 +16,7 @@ const PLATFORM_DOES_NOT_METHOD = "Platform does not method.";
  * 检测是否安装了qq
  * @return 返回一个promise
  * */
-export const isQQClientInstalled = QQSDK.checkClientInstalled;
+export const isQQClientInstalled = RNInterestQQ.checkClientInstalled;
 
 /**
  * 调起qq登录
@@ -25,14 +25,14 @@ export const isQQClientInstalled = QQSDK.checkClientInstalled;
  * @return access_token
  * @return expires_time
  * */
-export const login = QQSDK.ssoLogin;
+export const login = RNInterestQQ.ssoLogin;
 
 /**
  * 退出qq登录
  */
-export const logout = QQSDK.logout;
+export const logout = RNInterestQQ.logout;
 
-export const shareScene = {'QQ': QQSDK.QQ, 'QQZone': QQSDK.QQZone, 'Favorite': QQSDK.Favorite};
+export const shareScene = {'QQ': RNInterestQQ.QQ, 'QQZone': RNInterestQQ.QQZone, 'Favorite': RNInterestQQ.Favorite};
 
 /**
  * 分享一个文本到qq
@@ -41,7 +41,7 @@ export const shareScene = {'QQ': QQSDK.QQ, 'QQZone': QQSDK.QQZone, 'Favorite': Q
  * @return 返回一个promise
  * */
 export function shareText(text) {
-    return QQSDK.shareText(text,shareScene.QQ);
+    return RNInterestQQ.shareText(text,shareScene.QQ);
 }
 
 /**
@@ -50,7 +50,7 @@ export function shareText(text) {
  * @return 返回一个promise
  * */
 export function shareTextToQzone(text) {
-    return QQSDK.shareText(text,shareScene.QQZone);
+    return RNInterestQQ.shareText(text,shareScene.QQZone);
 }
 
 /**
@@ -60,7 +60,7 @@ export function shareTextToQzone(text) {
  * */
 export function loginWithQRlogin() {
     if(isIOS){
-        return QQSDK.loginWithQRlogin();
+        return RNInterestQQ.loginWithQRlogin();
     }else{
         return Promise.reject({
             code:405,
@@ -76,7 +76,7 @@ export function loginWithQRlogin() {
  * */
 export function viewCachedToken() {
     if(isIOS){
-        return QQSDK.viewCachedToken();
+        return RNInterestQQ.viewCachedToken();
     }else{
         return Promise.reject({
             code:405,
@@ -93,7 +93,7 @@ export function viewCachedToken() {
  * */
 export function deleteCachedToken() {
     if(isIOS){
-        return QQSDK.deleteCachedToken();
+        return RNInterestQQ.deleteCachedToken();
     }else{
         return Promise.reject({
             code:405,
@@ -109,7 +109,7 @@ export function deleteCachedToken() {
  * @param description 分享摘要
  * */
 export function shareImage(image,title="",description="") {
-    return QQSDK.shareImage(image,title,description,shareScene.QQ)
+    return RNInterestQQ.shareImage(image,title,description,shareScene.QQ)
 }
 
 /**
@@ -119,7 +119,7 @@ export function shareImage(image,title="",description="") {
  * @param description 分享摘要
  * */
 export function shareImgToQZone(image,title="",description="") {
-    return QQSDK.shareImage(image,title,description,shareScene.QQZone)
+    return RNInterestQQ.shareImage(image,title,description,shareScene.QQZone)
 }
 
 /**
@@ -130,7 +130,7 @@ export function shareImgToQZone(image,title="",description="") {
  * @param description 分享摘要
  * */
 export function shareNews(url,image,title,description="") {
-    return QQSDK.shareImage(url,image,title,description,shareScene.QQ)
+    return RNInterestQQ.shareImage(url,image,title,description,shareScene.QQ)
 }
 
 
@@ -142,7 +142,7 @@ export function shareNews(url,image,title,description="") {
  * @param description 分享摘要
  * */
 export function shareNewsToQzone(url,image,title,description="") {
-    return QQSDK.shareImage(url,image,title,description,shareScene.QQZone)
+    return RNInterestQQ.shareImage(url,image,title,description,shareScene.QQZone)
 }
 
 /**
@@ -154,7 +154,7 @@ export function shareNewsToQzone(url,image,title,description="") {
  * @param description 分享摘要
  * */
 export function shareAudio(url,flashUrl,image,title,description="") {
-    return QQSDK.shareAudio(url,flashUrl,image,title,description,shareScene.QQ)
+    return RNInterestQQ.shareAudio(url,flashUrl,image,title,description,shareScene.QQ)
 }
 
 /**
@@ -166,7 +166,7 @@ export function shareAudio(url,flashUrl,image,title,description="") {
  * @param description 分享摘要
  * */
 export function shareAudioToQzone(url,flashUrl,image,title,description="") {
-    return QQSDK.shareAudio(url,flashUrl,image,title,description,shareScene.QQZone)
+    return RNInterestQQ.shareAudio(url,flashUrl,image,title,description,shareScene.QQZone)
 }
 
 
@@ -180,7 +180,7 @@ export function shareAudioToQzone(url,flashUrl,image,title,description="") {
  * @param description 分享摘要
  * */
 export function shareVideo(url,flashUrl,image,title,description="") {
-    return QQSDK.shareVideo(url,flashUrl,image,title,description,shareScene.QQ)
+    return RNInterestQQ.shareVideo(url,flashUrl,image,title,description,shareScene.QQ)
 }
 
 /**
@@ -192,7 +192,7 @@ export function shareVideo(url,flashUrl,image,title,description="") {
  * @param description 分享摘要
  * */
 export function shareVideoToQzone(url,flashUrl,image,title,description="") {
-    return QQSDK.shareVideo(url,flashUrl,image,title,description,shareScene.QQZone)
+    return RNInterestQQ.shareVideo(url,flashUrl,image,title,description,shareScene.QQZone)
 }
 
 /**
@@ -202,7 +202,7 @@ export function shareVideoToQzone(url,flashUrl,image,title,description="") {
  * */
 export function shareFile(fileUrl) {
     if(isIOS){
-        return QQSDK.shareFile(fileUrl);
+        return RNInterestQQ.shareFile(fileUrl);
     }else{
         return Promise.reject({
             code:405,
@@ -217,7 +217,7 @@ export function shareFile(fileUrl) {
  * */
 export function addFriend() {
     if(isIOS){
-        return QQSDK.addFriend();
+        return RNInterestQQ.addFriend();
     }else{
         return Promise.reject({
             code:405,
@@ -230,7 +230,7 @@ export function addFriend() {
  * 获取UnionId
  * */
 export function requestUnionId() {
-        return QQSDK.requestUnionId();
+        return RNInterestQQ.requestUnionId();
 }
 
 /**
@@ -240,7 +240,7 @@ export function requestUnionId() {
  * */
 export function joinGroup() {
     if(isIOS){
-        return QQSDK.joinGroup();
+        return RNInterestQQ.joinGroup();
     }else{
         return Promise.reject({
             code:405,
@@ -255,7 +255,7 @@ export function joinGroup() {
  * */
 export function gameConsortiumBindingGroup() {
     if(isIOS){
-        return QQSDK.gameConsortiumBindingGroup();
+        return RNInterestQQ.gameConsortiumBindingGroup();
     }else{
         return Promise.reject({
             code:405,
@@ -275,7 +275,7 @@ export function gameConsortiumBindingGroup() {
  * */
 export function shareToQQ(title,desc="",url,imgUrl,appName) {
     if(!isIOS){
-        return QQSDK.shareToQQ(title,desc,url,image,appName);
+        return RNInterestQQ.shareToQQ(title,desc,url,image,appName);
     }else{
         return Promise.reject({
             code:405,
@@ -294,7 +294,7 @@ export function shareToQQ(title,desc="",url,imgUrl,appName) {
  * */
 export function shareToQzone(title,desc="",url,imgUrlArr) {
     if(!isIOS){
-        return QQSDK.shareToQzone(title,desc,url,imgUrlArr);
+        return RNInterestQQ.shareToQzone(title,desc,url,imgUrlArr);
     }else{
         return Promise.reject({
             code:405,
