@@ -113,7 +113,7 @@ public class InterestQQModule extends ReactContextBaseJavaModule {
 
     @Override
     public String getName() {
-        return "QQSDK";
+        return "RNInterestQQ";
     }
 
     @Override
@@ -774,23 +774,31 @@ public class InterestQQModule extends ReactContextBaseJavaModule {
     IUiListener loginListener = new IUiListener() {
         @Override
         public void onComplete(Object response) {
-            if (null == response) {
-                mPromise.reject("600",QQ_RESPONSE_ERROR);
-                return;
-            }
-            JSONObject jsonResponse = (JSONObject) response;
-            if (jsonResponse.length() == 0) {
-                mPromise.reject("600",QQ_RESPONSE_ERROR);
-                return;
-            }
-            if (initOpenidAndToken(jsonResponse)) {
-                WritableMap map = Arguments.createMap();
-                map.putString("userid", mTencent.getOpenId());
-                map.putString("access_token", mTencent.getAccessToken());
-                map.putDouble("expires_time", mTencent.getExpiresIn());
-                mPromise.resolve(map);
-            } else {
-                mPromise.reject("600",QQ_RESPONSE_ERROR);
+            try{
+                if (null == response) {
+                    mPromise.reject("600",QQ_RESPONSE_ERROR);
+                    return;
+                }
+                JSONObject jsonResponse = (JSONObject) response;
+                if (jsonResponse.length() == 0) {
+                    mPromise.reject("600",QQ_RESPONSE_ERROR);
+                    return;
+                }
+                if (initOpenidAndToken(jsonResponse)) {
+                    WritableMap map = Arguments.createMap();
+                    map.putString("pay_token",jsonResponse.getString("pay_token"));
+                    map.putString("pf",jsonResponse.getString("pf"));
+                    map.putString("expires_in",jsonResponse.getString("expires_in"));
+                    map.putString("openid",jsonResponse.getString("openid"));
+                    map.putString("pfkey",jsonResponse.getString("pfkey"));
+                    map.putString("msg",jsonResponse.getString("msg"));
+                    map.putString("access_token",jsonResponse.getString("access_token"));
+                    mPromise.resolve(map);
+                } else {
+                    mPromise.reject("600",QQ_RESPONSE_ERROR);
+                }
+            } catch (Exception e){
+
             }
         }
 
