@@ -9,7 +9,8 @@ import PropTypes from "prop-types"
 import {
     View,
     NativeModules,
-    Alert
+    Alert,
+    Text
 } from "react-native"
 
 import {
@@ -47,7 +48,8 @@ class Home extends PureComponent {
         RNInterestQQ
             .login()
             .then(e=>{
-                Alert.alert(JSON.stringify(e));
+                //e为JSON串，可使用JSON.parse(e)解析
+                Alert.alert(e);
             }).catch(e=>{
                 Alert.alert(JSON.stringify(e))
         });
@@ -87,6 +89,7 @@ class Home extends PureComponent {
 
         return (
             <View>
+                <Text>登录相关</Text>
                 <HomeRow
                     text={"checkClientInstalled"}
                     onPress={this.checkClientInstalled}

@@ -438,14 +438,14 @@ RCT_EXPORT_METHOD(shareVideo:(NSString *)previewUrl
         }
     }
 }
-- (NSDictionary *)makeResultWithUserId:(NSString *)userId
-                           accessToken:(NSString *)accessToken
-                        expirationDate:(NSDate *)expirationDate {
-    NSDictionary *result = @{ @"userid" : userId,
-                              @"access_token" : accessToken,
-                              @"expires_time" : [NSString stringWithFormat:@"%f", [expirationDate timeIntervalSince1970] * 1000] };
-    return result;
-}
+//- (NSDictionary *)makeResultWithUserId:(NSString *)userId
+//                           accessToken:(NSString *)accessToken
+//                        expirationDate:(NSDate *)expirationDate {
+//    NSDictionary *result = @{ @"userid" : userId,
+//                              @"access_token" : accessToken,
+//                              @"expires_time" : [NSString stringWithFormat:@"%f", [expirationDate timeIntervalSince1970] * 1000] };
+//    return result;
+//}
 - (void)handleOpenURLNotification:(NSNotification *)notification {
     NSURL *url = [NSURL URLWithString:[notification userInfo][@"url"]];
     NSString *schemaPrefix = [@"tencent" stringByAppendingString:appId];
@@ -535,10 +535,19 @@ RCT_EXPORT_METHOD(shareVideo:(NSString *)previewUrl
 #pragma mark - TencentSessionDelegate
 - (void)tencentDidLogin {
     if (tencentOAuth.accessToken && 0 != [tencentOAuth.accessToken length] && loginResolve) {
-        NSDictionary *result = [self makeResultWithUserId:tencentOAuth.openId
-                                              accessToken:tencentOAuth.accessToken
-                                           expirationDate:tencentOAuth.expirationDate];
-        loginResolve(result);
+        NSMutableDictionary *result = [[NSMutableDictionary alloc]init];
+        if (tencentOAuth.authMode == kAuthModeServerSideCode ) {
+            [result setObject:[tencentOAuth passData] forKey:@"passData"];
+            [result setObject:tencentOAuth.accessToken forKey:@"severCode"];
+        }
+        else
+        {
+            [result setObject:[tencentOAuth passData] forKey:@"passData"];
+            [result setObject:tencentOAuth.accessToken forKey:@"clientToken"];
+            [result setObject:tencentOAuth.openId forKey:@"openid"];
+        }
+        NSString *resultJson = [Tools convertToJsonData:result];
+        loginResolve(resultJson);
         loginReject = nil;
     } else {
         if (loginReject) {
@@ -548,7 +557,6 @@ RCT_EXPORT_METHOD(shareVideo:(NSString *)previewUrl
         }
     }
 }
-
 - (void)tencentDidLogout {
     if (logoutResolve) {
         tencentOAuth = nil;
