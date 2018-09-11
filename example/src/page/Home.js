@@ -5,6 +5,7 @@
 import React, {PureComponent} from "react"
 
 import PropTypes from "prop-types"
+import moment from "moment"
 
 import {
     View,
@@ -65,6 +66,25 @@ class Home extends PureComponent {
         });
     };
 
+    viewCachedToken = ()=>{
+        RNInterestQQ
+            .viewCachedToken()
+            .then(e=>{
+                Alert.alert(JSON.stringify(e));
+            }).catch(e=>{
+            Alert.alert(JSON.stringify(e))
+        });
+    }
+
+    deleteCachedToken = ()=>{
+        RNInterestQQ
+            .deleteCachedToken()
+            .then(e=>{
+                Alert.alert(JSON.stringify(e));
+            }).catch(e=>{
+            Alert.alert(JSON.stringify(e))
+        });
+    }
 
     shareToQQ = ()=>{
         // RNInterestQQ.shareToQQ(
@@ -88,7 +108,7 @@ class Home extends PureComponent {
         } = this;
 
         return (
-            <View>
+            <View style={{paddingTop:20}}>
                 <Text>登录相关</Text>
                 <HomeRow
                     text={"checkClientInstalled"}
@@ -107,7 +127,15 @@ class Home extends PureComponent {
                     onPress={this.shareToQQ}
                 />
 
-
+                <Text>Token相关</Text>
+                <HomeRow
+                    text={"查看缓存Token"}
+                    onPress={this.viewCachedToken}
+                />
+                <HomeRow
+                    text={"删除缓存Token"}
+                    onPress={this.deleteCachedToken}
+                />
             </View>
         )
     }

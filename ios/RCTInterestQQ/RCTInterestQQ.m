@@ -100,6 +100,38 @@ RCT_EXPORT_METHOD(loginOut
     logoutReject = reject;
     [tencentOAuth logout: self];
 }
+RCT_EXPORT_METHOD(viewCachedToken:(RCTPromiseResolveBlock)resolve
+                  :(RCTPromiseRejectBlock)reject){
+    NSString *token = [tencentOAuth getCachedToken];
+    NSString *openid = [tencentOAuth getCachedOpenID];
+    NSDate *exp = [tencentOAuth getCachedExpirationDate];
+    BOOL isValid = [tencentOAuth isCachedTokenValid];
+    NSNumber *isValidNum = [NSNumber numberWithBool:isValid];
+    if (token && openid && exp) {
+        NSMutableDictionary *dic = [[NSMutableDictionary alloc]init];
+        [dic setObject:token forKey:@"token"];
+        [dic setObject:openid forKey:@"openid"];
+//        [dic setObject:expTime forKey:@"exp"];
+        [dic setObject:@(exp.timeIntervalSince1970*1000) forKey:@"exp"];
+        [dic setObject:isValidNum forKey:@"isValid"];
+        NSString *resultJson = [Tools convertToJsonData:dic];
+        resolve(resultJson);
+    }else{
+//        wx-todo：错误码和抛出错误需要协定
+        reject(@"404",@"没有token",nil);
+    }
+    
+}
+RCT_EXPORT_METHOD(deleteCachedToken
+                  :(RCTPromiseResolveBlock)resolve
+                  :(RCTPromiseRejectBlock)reject) {
+    BOOL ret =  [tencentOAuth deleteCachedToken];
+    NSNumber *retNum = [NSNumber numberWithBool:ret];
+    NSMutableDictionary *dic = [[NSMutableDictionary alloc]init];
+    [dic setObject:retNum forKey:@"result"];
+    NSString *resultJson =[Tools convertToJsonData:dic];
+    resolve(resultJson);
+}
 
 RCT_EXPORT_METHOD(shareText:(NSString *)text
                   shareScene:(NSNumber *)scene
