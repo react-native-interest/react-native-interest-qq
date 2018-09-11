@@ -2,29 +2,23 @@
  * Created by iwangx on 2018/8/27.
  */
 
-import React, {PureComponent} from "react"
-
-import PropTypes from "prop-types"
+import React, { PureComponent } from 'react';
 
 import {
     View,
     NativeModules,
     Alert
-} from "react-native"
+} from 'react-native';
 
 import {
     HomeRow
-} from "../components"
+} from '../components';
 
 const {
     RNInterestQQ
-}  =NativeModules;
+} = NativeModules;
 
 class Home extends PureComponent {
-    constructor(props) {
-        super(props);
-    }
-
     static propTypes = {};
 
     static defaultProps = {};
@@ -33,38 +27,38 @@ class Home extends PureComponent {
 
     }
 
-    checkClientInstalled = ()=>{
+    checkClientInstalled = () => {
         RNInterestQQ
             .checkClientInstalled()
-            .then(e=>{
+            .then((e) => {
                 Alert.alert(JSON.stringify(e));
-            }).catch(e=>{
-            Alert.alert(JSON.stringify(e))
+            }).catch((e) => {
+            Alert.alert(JSON.stringify(e));
         });
     }
 
-    login = ()=>{
+    login = () => {
         RNInterestQQ
             .login()
-            .then(e=>{
+            .then((e) => {
                 Alert.alert(JSON.stringify(e));
-            }).catch(e=>{
-                Alert.alert(JSON.stringify(e))
+            }).catch((e) => {
+                Alert.alert(JSON.stringify(e));
         });
     };
 
-    loginOut = ()=>{
+    loginOut = () => {
         RNInterestQQ
             .loginOut()
-            .then(e=>{
+            .then((e) => {
                 Alert.alert(JSON.stringify(e));
-            }).catch(e=>{
-            Alert.alert(JSON.stringify(e))
+            }).catch((e) => {
+            Alert.alert(JSON.stringify(e));
         });
     };
 
 
-    shareToQQ = ()=>{
+    shareToQQ = () => {
         // RNInterestQQ.shareToQQ(
         //     "这里是分享标题",
         //     "desc",
@@ -76,38 +70,33 @@ class Home extends PureComponent {
         //     console.log(e);
         // });
 
-        RNInterestQQ.shareText("123213123",0)
+        RNInterestQQ.shareText('123213123', 0);
     };
 
     render() {
-        const {
-            props,
-            state
-        } = this;
-
         return (
-            <View>
-                <HomeRow
-                    text={"checkClientInstalled"}
-                    onPress={this.checkClientInstalled}
-                />
-                <HomeRow
-                    text={"Login"}
-                    onPress={this.login}
-                />
-                <HomeRow
-                    text={"LoginOut"}
-                    onPress={this.loginOut}
-                />
-                <HomeRow
-                    text={"shareToQQ"}
-                    onPress={this.shareToQQ}
-                />
+          <View>
+            <HomeRow
+              text="checkClientInstalled"
+              onPress={this.checkClientInstalled}
+            />
+            <HomeRow
+              text="Login"
+              onPress={this.login}
+            />
+            <HomeRow
+              text="LoginOut"
+              onPress={this.loginOut}
+            />
+            <HomeRow
+              text="shareToQQ"
+              onPress={this.shareToQQ}
+            />
 
 
-            </View>
-        )
+          </View>
+        );
     }
 }
 
-export default Home
+export default Home;
