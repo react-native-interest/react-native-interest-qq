@@ -7,25 +7,31 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1033B54C213EA07F005CBC04 /* Tools.m in Sources */ = {isa = PBXBuildFile; fileRef = 1033B54B213EA07F005CBC04 /* Tools.m */; };
+		1033B55A213EA0BE005CBC04 /* Tools.h in Copy Files */ = {isa = PBXBuildFile; fileRef = 1033B54A213EA07F005CBC04 /* Tools.h */; };
 		33693FFC21314EB20097C534 /* RCTInterestQQ.m in Sources */ = {isa = PBXBuildFile; fileRef = 33693FFB21314EB20097C534 /* RCTInterestQQ.m */; };
-		33693FFD21314EB20097C534 /* RCTInterestQQ.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 33693FFA21314EB20097C534 /* RCTInterestQQ.h */; };
+		33693FFD21314EB20097C534 /* RCTInterestQQ.h in Copy Files */ = {isa = PBXBuildFile; fileRef = 33693FFA21314EB20097C534 /* RCTInterestQQ.h */; };
 		3369400421314EBF0097C534 /* TencentOpenAPI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3369400321314EBF0097C534 /* TencentOpenAPI.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		33693FF521314EB20097C534 /* CopyFiles */ = {
+		33693FF521314EB20097C534 /* Copy Files */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "include/$(PRODUCT_NAME)";
 			dstSubfolderSpec = 16;
 			files = (
-				33693FFD21314EB20097C534 /* RCTInterestQQ.h in CopyFiles */,
+				1033B55A213EA0BE005CBC04 /* Tools.h in Copy Files */,
+				33693FFD21314EB20097C534 /* RCTInterestQQ.h in Copy Files */,
 			);
+			name = "Copy Files";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		1033B54A213EA07F005CBC04 /* Tools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Tools.h; sourceTree = "<group>"; };
+		1033B54B213EA07F005CBC04 /* Tools.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Tools.m; sourceTree = "<group>"; };
 		33693FF721314EB20097C534 /* libRCTInterestQQ.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libRCTInterestQQ.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		33693FFA21314EB20097C534 /* RCTInterestQQ.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCTInterestQQ.h; sourceTree = "<group>"; };
 		33693FFB21314EB20097C534 /* RCTInterestQQ.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCTInterestQQ.m; sourceTree = "<group>"; };
@@ -66,6 +72,8 @@
 				3369400321314EBF0097C534 /* TencentOpenAPI.framework */,
 				33693FFA21314EB20097C534 /* RCTInterestQQ.h */,
 				33693FFB21314EB20097C534 /* RCTInterestQQ.m */,
+				1033B54A213EA07F005CBC04 /* Tools.h */,
+				1033B54B213EA07F005CBC04 /* Tools.m */,
 			);
 			path = RCTInterestQQ;
 			sourceTree = "<group>";
@@ -79,7 +87,7 @@
 			buildPhases = (
 				33693FF321314EB20097C534 /* Sources */,
 				33693FF421314EB20097C534 /* Frameworks */,
-				33693FF521314EB20097C534 /* CopyFiles */,
+				33693FF521314EB20097C534 /* Copy Files */,
 			);
 			buildRules = (
 			);
@@ -127,6 +135,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				33693FFC21314EB20097C534 /* RCTInterestQQ.m in Sources */,
+				1033B54C213EA07F005CBC04 /* Tools.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -247,6 +256,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
+				ENABLE_BITCODE = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/RCTInterestQQ",
@@ -263,6 +273,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
+				ENABLE_BITCODE = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/RCTInterestQQ",

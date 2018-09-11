@@ -2,13 +2,17 @@
  * Created by iwangx on 2018/8/27.
  */
 
-import React, { PureComponent } from 'react';
+import React, {PureComponent} from "react"
+
+import PropTypes from "prop-types"
+import moment from "moment"
 
 import {
     View,
     NativeModules,
-    Alert
-} from 'react-native';
+    Alert,
+    Text
+} from "react-native"
 
 import {
     HomeRow
@@ -40,10 +44,11 @@ class Home extends PureComponent {
     login = () => {
         RNInterestQQ
             .login()
-            .then((e) => {
-                Alert.alert(JSON.stringify(e));
-            }).catch((e) => {
-                Alert.alert(JSON.stringify(e));
+            .then(e=>{
+                //e为JSON串，可使用JSON.parse(e)解析
+                Alert.alert(e);
+            }).catch(e=>{
+                Alert.alert(JSON.stringify(e))
         });
     };
 
@@ -57,6 +62,25 @@ class Home extends PureComponent {
         });
     };
 
+    viewCachedToken = ()=>{
+        RNInterestQQ
+            .viewCachedToken()
+            .then(e=>{
+                Alert.alert(JSON.stringify(e));
+            }).catch(e=>{
+            Alert.alert(JSON.stringify(e))
+        });
+    }
+
+    deleteCachedToken = ()=>{
+        RNInterestQQ
+            .deleteCachedToken()
+            .then(e=>{
+                Alert.alert(JSON.stringify(e));
+            }).catch(e=>{
+            Alert.alert(JSON.stringify(e))
+        });
+    }
 
     shareToQQ = () => {
         // RNInterestQQ.shareToQQ(
@@ -75,27 +99,36 @@ class Home extends PureComponent {
 
     render() {
         return (
-          <View>
-            <HomeRow
-              text="checkClientInstalled"
-              onPress={this.checkClientInstalled}
-            />
-            <HomeRow
-              text="Login"
-              onPress={this.login}
-            />
-            <HomeRow
-              text="LoginOut"
-              onPress={this.loginOut}
-            />
-            <HomeRow
-              text="shareToQQ"
-              onPress={this.shareToQQ}
-            />
+            <View style={{paddingTop:20}}>
+                <Text>登录相关</Text>
+                <HomeRow
+                    text={"checkClientInstalled"}
+                    onPress={this.checkClientInstalled}
+                />
+                <HomeRow
+                    text={"Login"}
+                    onPress={this.login}
+                />
+                <HomeRow
+                    text={"LoginOut"}
+                    onPress={this.loginOut}
+                />
+                <HomeRow
+                    text={"shareToQQ"}
+                    onPress={this.shareToQQ}
+                />
 
-
-          </View>
-        );
+                <Text>Token相关</Text>
+                <HomeRow
+                    text={"查看缓存Token"}
+                    onPress={this.viewCachedToken}
+                />
+                <HomeRow
+                    text={"删除缓存Token"}
+                    onPress={this.deleteCachedToken}
+                />
+            </View>
+        )
     }
 }
 

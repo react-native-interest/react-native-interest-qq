@@ -10,6 +10,12 @@
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTRootView.h>
 
+
+#import <RCTInterestQQ/RCTInterestQQ.h>
+#import <TencentOpenAPI/TencentOAuth.h>
+#import <TencentOpenAPI/QQApiInterface.h>
+
+
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
@@ -32,4 +38,15 @@
   return YES;
 }
 
+- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation{
+  [QQApiInterface handleOpenURL:url delegate:(id<QQApiInterfaceDelegate>)self];
+  
+  if (YES == [TencentOAuth CanHandleOpenURL:url])
+  {
+//    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Where from" message:url.description delegate:nil cancelButtonTitle:@"ok" otherButtonTitles:nil, nil];
+//    [alertView show];
+    return [TencentOAuth HandleOpenURL:url];
+  }
+  return YES;
+}
 @end
