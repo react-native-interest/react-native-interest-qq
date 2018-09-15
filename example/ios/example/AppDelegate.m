@@ -39,7 +39,7 @@
 }
 
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation{
-  [QQApiInterface handleOpenURL:url delegate:(id<QQApiInterfaceDelegate>)self];
+  [QQApiInterface handleOpenURL:url delegate:(id<QQApiInterfaceDelegate>)[[RCTInterestQQ alloc]init]];
   
   if (YES == [TencentOAuth CanHandleOpenURL:url])
   {

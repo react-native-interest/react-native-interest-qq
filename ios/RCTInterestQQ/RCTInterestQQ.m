@@ -31,18 +31,46 @@ NSString *appId = @"";
 
 RCT_EXPORT_MODULE(RNInterestQQ)
 
-- (instancetype)init {
-    self = [super init];
-    if (self) {
-        [self initTencentOAuth];
+//- (instancetype)init {
+//    self = [super init];
+//    if (self) {
+//        [self initTencentOAuth];
+//        [[NSNotificationCenter defaultCenter] addObserver:self
+//                                                 selector:@selector(handleOpenURLNotification:)
+//                                                     name:@"RCTOpenURLNotification"
+//                                                   object:nil];
+//    }
+//    return self;
+//}
+#pragma mark -- 单例
+static RCTInterestQQ *sharedInstance = nil;
++ (id)allocWithZone:(NSZone *)zone {
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        sharedInstance = [super allocWithZone:zone];
+        [sharedInstance initTencentOAuth];
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(handleOpenURLNotification:)
                                                      name:@"RCTOpenURLNotification"
                                                    object:nil];
-    }
-    return self;
+    });
+    return sharedInstance;
 }
 
++(instancetype)shareViewCtrl
+{
+    // 最好用self 用Tools他的子类调用时会出现错误
+    return [[self alloc]init];
+}
+// 为了严谨，也要重写copyWithZone 和 mutableCopyWithZone
+-(id)copyWithZone:(NSZone *)zone
+{
+    return sharedInstance;
+}
+-(id)mutableCopyWithZone:(NSZone *)zone
+{
+    return sharedInstance;
+}
 - (NSArray<NSString *> *)supportedEvents {
     return @[];
 }
@@ -56,6 +84,7 @@ RCT_EXPORT_MODULE(RNInterestQQ)
              @"Favorite": @(Favorite),
              };
 }
+#pragma mark 监测是否安装QQ
 RCT_EXPORT_METHOD(checkClientInstalled
                   :(RCTPromiseResolveBlock)resolve
                   :(RCTPromiseRejectBlock)reject) {
@@ -65,7 +94,7 @@ RCT_EXPORT_METHOD(checkClientInstalled
         reject(@"404", QQ_NOT_INSTALLED, nil);
     }
 }
-
+#pragma mark 登录
 RCT_EXPORT_METHOD(login
                   : (RCTPromiseResolveBlock)resolve
                   : (RCTPromiseRejectBlock)reject) {
@@ -92,7 +121,7 @@ RCT_EXPORT_METHOD(login
     [tencentOAuth setAuthShareType:AuthShareType_QQ];
     [tencentOAuth authorize:permissions];
 }
-
+#pragma mark 登出
 RCT_EXPORT_METHOD(loginOut
                   :(RCTPromiseResolveBlock)resolve
                   :(RCTPromiseRejectBlock)reject) {
@@ -100,6 +129,7 @@ RCT_EXPORT_METHOD(loginOut
     logoutReject = reject;
     [tencentOAuth logout: self];
 }
+#pragma mark 查看Token
 RCT_EXPORT_METHOD(viewCachedToken:(RCTPromiseResolveBlock)resolve
                   :(RCTPromiseRejectBlock)reject){
     NSString *token = [tencentOAuth getCachedToken];
@@ -122,6 +152,7 @@ RCT_EXPORT_METHOD(viewCachedToken:(RCTPromiseResolveBlock)resolve
     }
     
 }
+#pragma mark 删除Token
 RCT_EXPORT_METHOD(deleteCachedToken
                   :(RCTPromiseResolveBlock)resolve
                   :(RCTPromiseRejectBlock)reject) {
@@ -132,20 +163,29 @@ RCT_EXPORT_METHOD(deleteCachedToken
     NSString *resultJson =[Tools convertToJsonData:dic];
     resolve(resultJson);
 }
-
+#pragma mark 分享文本
 RCT_EXPORT_METHOD(shareText:(NSString *)text
-                  shareScene:(NSNumber *)scene
+                  shareScene:(NSNumber *_Nonnull)scene
                   :(RCTPromiseResolveBlock)resolve
                   :(RCTPromiseRejectBlock)reject) {
     shareReject = reject;
     shareResolve = resolve;
-    [self shareObjectWithData:@{@"text":text} Type:TextMessage Scene:scene];
+    if (!text) {
+        shareReject(@"404",@"没有token",nil);
+    }else{
+        [self shareObjectWithData:@{@"text":text} Type:TextMessage Scene:scene];
+    }
 }
 
+#pragma mark 分享图片
+/**
+ 分享图片
+ image：本地图片地址，网路图片地址，base64目前解析有问题
+ */
 RCT_EXPORT_METHOD(shareImage:(NSString *)image
                   title:(NSString *)title
                   description:(NSString *)description
-                  shareScene:(QQShareScene)scene
+                  shareScene:(NSNumber *_Nonnull)scene
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
     shareReject = reject;
@@ -161,11 +201,17 @@ RCT_EXPORT_METHOD(shareImage:(NSString *)image
                             Scene:scene];
     }
 }
+
+#pragma mark 分享新闻
+/**
+ 分享图片
+ image：本地图片地址，网路图片地址，base64目前解析有问题
+ */
 RCT_EXPORT_METHOD(shareNews:(NSString *)url
                   image:(NSString *)image
                   title:(NSString *)title
                   description:(NSString *)description
-                  shareScene:(QQShareScene)scene
+                  shareScene:(NSNumber *_Nonnull)scene
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
     shareReject = reject;

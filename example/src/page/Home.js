@@ -14,6 +14,7 @@ import {
 import {
     HomeRow
 } from '../components';
+// import { QQShare } from './QQShare';
 
 const {
     RNInterestQQ
@@ -33,10 +34,11 @@ class Home extends PureComponent {
             .checkClientInstalled()
             .then((e) => {
                 Alert.alert(JSON.stringify(e));
-            }).catch((e) => {
-            Alert.alert(JSON.stringify(e));
-        });
-    }
+            })
+            .catch((e) => {
+                Alert.alert(JSON.stringify(e));
+            });
+    };
 
     login = () => {
         RNInterestQQ
@@ -44,9 +46,10 @@ class Home extends PureComponent {
             .then((e) => {
                 // e为JSON串，可使用JSON.parse(e)解析
                 Alert.alert(e);
-            }).catch((e) => {
+            })
+            .catch((e) => {
                 Alert.alert(JSON.stringify(e));
-        });
+            });
     };
 
     loginOut = () => {
@@ -54,9 +57,10 @@ class Home extends PureComponent {
             .loginOut()
             .then((e) => {
                 Alert.alert(JSON.stringify(e));
-            }).catch((e) => {
-            Alert.alert(JSON.stringify(e));
-        });
+            })
+            .catch((e) => {
+                Alert.alert(JSON.stringify(e));
+            });
     };
 
     viewCachedToken = () => {
@@ -64,20 +68,30 @@ class Home extends PureComponent {
             .viewCachedToken()
             .then((e) => {
                 Alert.alert(JSON.stringify(e));
-            }).catch((e) => {
-            Alert.alert(JSON.stringify(e));
-        });
-    }
+            })
+            .catch((e) => {
+                Alert.alert(JSON.stringify(e));
+            });
+    };
 
     deleteCachedToken = () => {
         RNInterestQQ
             .deleteCachedToken()
             .then((e) => {
                 Alert.alert(JSON.stringify(e));
-            }).catch((e) => {
-            Alert.alert(JSON.stringify(e));
-        });
-    }
+            })
+            .catch((e) => {
+                Alert.alert(JSON.stringify(e));
+            });
+    };
+
+    pushToQQ = () => {
+        this.props.navigation.navigate('QQShare');
+    };
+
+    pushToQQZone = () => {
+
+    };
 
     shareToQQ = () => {
         // RNInterestQQ.shareToQQ(
@@ -123,6 +137,15 @@ class Home extends PureComponent {
             <HomeRow
               text="删除缓存Token"
               onPress={this.deleteCachedToken}
+            />
+            <Text>API</Text>
+            <HomeRow
+              text="QQ"
+              onPress={this.pushToQQ}
+            />
+            <HomeRow
+              text="QQZone"
+              onPress={this.pushToQQZone}
             />
           </View>
         );
