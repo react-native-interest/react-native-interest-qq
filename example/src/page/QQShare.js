@@ -51,6 +51,40 @@ export class QQShare extends PureComponent {
             });
     };
 
+    // shareAudio:(NSString *)previewUrl
+    // flashUrl:(NSString *)flashUrl
+    // image:(NSString *)image
+    // title:(NSString *)title
+    // description:(NSString *)description
+    // shareScene:(QQShareScene)scene
+    // resolve:(RCTPromiseResolveBlock)resolve
+    // reject:(RCTPromiseRejectBlock)reject)
+    shareAudio = () => {
+        RNInterestQQ
+            .shareAudio('www.baidu.com', 'www.baidu.com',
+                'http://e.hiphotos.baidu.com/image/pic/item/a1ec08fa513d2697e542494057fbb2fb4316d81e.jpg',
+                'title', 'description', 0)
+            .then((e) => {
+                Alert.alert(JSON.stringify(e));
+            })
+            .catch((e) => {
+                Alert.alert(JSON.stringify(e));
+            });
+    };
+
+    shareVideo = () => {
+        RNInterestQQ
+            .shareVideo('www.baidu.com',
+                'http://e.hiphotos.baidu.com/image/pic/item/a1ec08fa513d2697e542494057fbb2fb4316d81e.jpg',
+                'title', 'description', 0)
+            .then((e) => {
+                Alert.alert(JSON.stringify(e));
+            })
+            .catch((e) => {
+                Alert.alert(JSON.stringify(e));
+            });
+    };
+
     render() {
         return (
           <View style={QQShareStyles.container}>
@@ -65,6 +99,14 @@ export class QQShare extends PureComponent {
             <HomeRow
               text="分享新闻"
               onPress={this.shareNews}
+            />
+            <HomeRow
+              text="分享音频"
+              onPress={this.shareAudio}
+            />
+            <HomeRow
+              text="分享视频"
+              onPress={this.shareVideo}
             />
           </View>
         );

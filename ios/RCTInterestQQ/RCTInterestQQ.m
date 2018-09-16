@@ -228,21 +228,32 @@ RCT_EXPORT_METHOD(shareNews:(NSString *)url
                             Scene:scene];
     }
 }
-RCT_EXPORT_METHOD(shareAudio:(NSString *)previewUrl
+#pragma mark 分享音频
+/**
+ 分享音频
+ @param audioUrl 音频内容的目标URL（点击新闻进入的内容）
+ @param flashUrl 外部点击播放按钮的流媒体url(远程url，不得使用本地文件)
+ @param image 播放图片
+ @param title 分享内容的标题
+ @param description 分享内容的描述
+ 
+ */
+RCT_EXPORT_METHOD(shareAudio:(NSString *)audioUrl
                   flashUrl:(NSString *)flashUrl
                   image:(NSString *)image
                   title:(NSString *)title
                   description:(NSString *)description
-                  shareScene:(QQShareScene)scene
+                  shareScene:(NSNumber *_Nonnull)scene
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
     shareReject = reject;
     shareResolve = resolve;
+//    flashUrl = @"http://ra01.sycdn.kuwo.cn/resource/n3/32/56/3260586875.mp3";
     NSData *imageData = [self processImage:image];
     if (!imageData) {
         shareReject(@"500", QQ_IMAGE_PARAM_INCORRECT, nil);
     } else {
-        [self shareObjectWithData:@{@"url":previewUrl,
+        [self shareObjectWithData:@{@"url":audioUrl,
                                     @"flashUrl":flashUrl,
                                     @"image":imageData,
                                     @"title":title,
@@ -251,14 +262,14 @@ RCT_EXPORT_METHOD(shareAudio:(NSString *)previewUrl
                             Scene:scene];
     }
 }
-
+#pragma mark 分享视频
 RCT_EXPORT_METHOD(shareVideo:(NSString *)previewUrl
                   flashUrl:(NSString *)flashUrl
                   image:(NSString *)image
                   imageType:(NSInteger)type
                   title:(NSString *)title
                   description:(NSString *)description
-                  shareScene:(QQShareScene)scene
+                  shareScene:(NSNumber *_Nonnull)scene
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
     shareReject = reject;
@@ -356,7 +367,7 @@ RCT_EXPORT_METHOD(shareVideo:(NSString *)previewUrl
             NSURL *url = [NSURL URLWithString:[shareData objectForKey:@"url"]];
             NSString *title = [shareData objectForKey:@"title"];
             NSString *description = [shareData objectForKey:@"description"];
-            NSURL *flashUrl = [NSURL URLWithString:[shareData objectForKey:@"url"]];
+            NSURL *flashUrl = [NSURL URLWithString:[shareData objectForKey:@"flashUrl"]];
             QQApiAudioObject *audioObj = [QQApiAudioObject objectWithURL:url
                                                                    title:title
                                                              description:description
@@ -549,7 +560,7 @@ RCT_EXPORT_METHOD(shareVideo:(NSString *)previewUrl
         }
     }
 }
-
+#pragma mark - 图片处理
 - (NSData *)processImage:(NSString *)image {
     if ([self isBase64Data:image]) {
         return [[NSData alloc] initWithBase64EncodedString:image options:0];

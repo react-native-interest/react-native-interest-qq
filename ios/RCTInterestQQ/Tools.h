@@ -15,4 +15,6 @@
 + (NSDictionary *)jsonToDic:(NSString *)jsonString;
 #pragma mark -- 去除RN存储数据解析后的字符串含有 " 和 转义符
 + (NSString *)removeEscapeCharacter:(NSString*)string;
+#pragma mark -- 输入本地文件名，可获取文件绝对路径
++ (NSString *)getFliePathWithName:(NSString*)fileName;
 @end

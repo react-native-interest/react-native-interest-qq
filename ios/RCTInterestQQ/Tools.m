@@ -70,5 +70,12 @@
     
     return responseString;
 }
-
+#pragma mark -- 输入本地文件名，可获取文件绝对路径
++ (NSString *)getFliePathWithName:(NSString*)fileName{
+    NSArray *aArray = [fileName componentsSeparatedByString:@"."];
+    NSString *filename = [aArray objectAtIndex:0];
+    NSString *sufix = [aArray objectAtIndex:1];
+    NSString *filePath = [[NSBundle mainBundle] pathForResource:filename ofType:sufix];
+    return filePath;
+}
 @end
