@@ -78,4 +78,8 @@
     NSString *filePath = [[NSBundle mainBundle] pathForResource:filename ofType:sufix];
     return filePath;
 }
+#pragma mark - 根据传入的scence返回对应的QQShareScene
+//+ (QQShareScene)getShareScence:(NSNumber*)scence{
+//    return QQZone;
+//}
 @end

@@ -17,4 +17,6 @@
 + (NSString *)removeEscapeCharacter:(NSString*)string;
 #pragma mark -- 输入本地文件名，可获取文件绝对路径
 + (NSString *)getFliePathWithName:(NSString*)fileName;
+
+
 @end

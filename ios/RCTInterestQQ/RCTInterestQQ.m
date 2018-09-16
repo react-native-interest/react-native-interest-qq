@@ -59,7 +59,7 @@ static RCTInterestQQ *sharedInstance = nil;
 
 +(instancetype)shareViewCtrl
 {
-    // 最好用self 用Tools他的子类调用时会出现错误
+    // 最好用self 用Tool他的子类调用时会出现错误
     return [[self alloc]init];
 }
 // 为了严谨，也要重写copyWithZone 和 mutableCopyWithZone
@@ -173,7 +173,7 @@ RCT_EXPORT_METHOD(shareText:(NSString *)text
     if (!text) {
         shareReject(@"404",@"没有token",nil);
     }else{
-        [self shareObjectWithData:@{@"text":text} Type:TextMessage Scene:scene];
+        [self shareObjectWithData:@{@"text":text} Type:TextMessage Scene:[[NSString stringWithFormat:@"%@",scene] integerValue]];
     }
 }
 
@@ -198,7 +198,7 @@ RCT_EXPORT_METHOD(shareImage:(NSString *)image
                                     @"title":title,
                                     @"description":description}
                              Type:ImageMesssage
-                            Scene:scene];
+                            Scene:[[NSString stringWithFormat:@"%@",scene] integerValue]];
     }
 }
 
@@ -225,7 +225,7 @@ RCT_EXPORT_METHOD(shareNews:(NSString *)url
                                     @"title":title,
                                     @"description":description}
                              Type:NewsMessageWithLocalImage
-                            Scene:scene];
+                            Scene:[[NSString stringWithFormat:@"%@",scene] integerValue]];
     }
 }
 #pragma mark 分享音频
@@ -259,14 +259,22 @@ RCT_EXPORT_METHOD(shareAudio:(NSString *)audioUrl
                                     @"title":title,
                                     @"description":description}
                              Type:AudioMessage
-                            Scene:scene];
+                            Scene:[[NSString stringWithFormat:@"%@",scene] integerValue]];
     }
 }
 #pragma mark 分享视频
-RCT_EXPORT_METHOD(shareVideo:(NSString *)previewUrl
+/**
+ 分享视频
+ @param videoUrl 视频新闻内容的目标URL（点击新闻进入的内容）
+ @param flashUrl 外部点击播放按钮的流媒体url(远程url，不得使用本地文件)
+ @param image 播放图片
+ @param title 分享内容的标题
+ @param description 分享内容的描述
+ 
+ */
+RCT_EXPORT_METHOD(shareVideo:(NSString *)videoUrl
                   flashUrl:(NSString *)flashUrl
                   image:(NSString *)image
-                  imageType:(NSInteger)type
                   title:(NSString *)title
                   description:(NSString *)description
                   shareScene:(NSNumber *_Nonnull)scene
@@ -275,13 +283,13 @@ RCT_EXPORT_METHOD(shareVideo:(NSString *)previewUrl
     shareReject = reject;
     shareResolve = resolve;
     NSData *imageData = [self processImage:image];
-    [self shareObjectWithData:@{@"url":previewUrl,
+    [self shareObjectWithData:@{@"url":videoUrl,
                                 @"flashUrl":flashUrl,
                                 @"image":imageData,
                                 @"title":title,
                                 @"description":description}
                          Type:VideoMessage
-                        Scene:scene];
+                        Scene:[[NSString stringWithFormat:@"%@",scene] integerValue]];
 }
 
 - (void)shareTextToQQZone:(NSString *)text {
@@ -394,7 +402,7 @@ RCT_EXPORT_METHOD(shareVideo:(NSString *)previewUrl
             NSURL *url = [NSURL URLWithString:[shareData objectForKey:@"url"]];
             NSString *title = [shareData objectForKey:@"title"];
             NSString *description = [shareData objectForKey:@"description"];
-            NSURL *flashUrl = [NSURL URLWithString:[shareData objectForKey:@"url"]];
+            NSURL *flashUrl = [NSURL URLWithString:[shareData objectForKey:@"flashUrl"]];
             QQApiVideoObject *videoObj = [QQApiVideoObject objectWithURL:url
                                                                    title:title
                                                              description:description

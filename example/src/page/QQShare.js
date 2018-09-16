@@ -17,7 +17,7 @@ const {
 export class QQShare extends PureComponent {
     shareText = () => {
         RNInterestQQ
-            .shareText('hello', 0)
+            .shareText('hello', RNInterestQQ.Favorite)
             .then((e) => {
                 Alert.alert(JSON.stringify(e));
             })
@@ -29,7 +29,7 @@ export class QQShare extends PureComponent {
     shareImage = () => {
         RNInterestQQ
             .shareImage('http://e.hiphotos.baidu.com/image/pic/item/a1ec08fa513d2697e542494057fbb2fb4316d81e.jpg',
-                'title', 'description', 0)
+                'title', 'description', RNInterestQQ.Favorite)
             .then((e) => {
                 Alert.alert(JSON.stringify(e));
             })
@@ -42,7 +42,7 @@ export class QQShare extends PureComponent {
         RNInterestQQ
             .shareNews('www.baidu.com',
                 'http://e.hiphotos.baidu.com/image/pic/item/a1ec08fa513d2697e542494057fbb2fb4316d81e.jpg',
-                'title', 'description', 0)
+                'title', 'description', RNInterestQQ.Favorite)
             .then((e) => {
                 Alert.alert(JSON.stringify(e));
             })
@@ -51,19 +51,12 @@ export class QQShare extends PureComponent {
             });
     };
 
-    // shareAudio:(NSString *)previewUrl
-    // flashUrl:(NSString *)flashUrl
-    // image:(NSString *)image
-    // title:(NSString *)title
-    // description:(NSString *)description
-    // shareScene:(QQShareScene)scene
-    // resolve:(RCTPromiseResolveBlock)resolve
-    // reject:(RCTPromiseRejectBlock)reject)
+
     shareAudio = () => {
         RNInterestQQ
-            .shareAudio('www.baidu.com', 'www.baidu.com',
+            .shareAudio('www.baidu.com', 'http://ra01.sycdn.kuwo.cn/resource/n3/32/56/3260586875.mp3',
                 'http://e.hiphotos.baidu.com/image/pic/item/a1ec08fa513d2697e542494057fbb2fb4316d81e.jpg',
-                'title', 'description', 0)
+                'title', 'description', RNInterestQQ.Favorite)
             .then((e) => {
                 Alert.alert(JSON.stringify(e));
             })
@@ -74,9 +67,9 @@ export class QQShare extends PureComponent {
 
     shareVideo = () => {
         RNInterestQQ
-            .shareVideo('www.baidu.com',
+            .shareVideo('www.baidu.com', 'http://ra01.sycdn.kuwo.cn/resource/n3/32/56/3260586875.mp3',
                 'http://e.hiphotos.baidu.com/image/pic/item/a1ec08fa513d2697e542494057fbb2fb4316d81e.jpg',
-                'title', 'description', 0)
+                'title', 'description', RNInterestQQ.Favorite)
             .then((e) => {
                 Alert.alert(JSON.stringify(e));
             })

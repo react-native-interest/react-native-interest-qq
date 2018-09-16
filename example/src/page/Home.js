@@ -140,12 +140,8 @@ class Home extends PureComponent {
             />
             <Text>API</Text>
             <HomeRow
-              text="QQ"
+              text="QQ、QQZone、Favorite"
               onPress={this.pushToQQ}
-            />
-            <HomeRow
-              text="QQZone"
-              onPress={this.pushToQQZone}
             />
           </View>
         );
