@@ -35,7 +35,7 @@ class Home extends PureComponent {
 
     login = ()=>{
         RNInterestQQ
-            .login()
+            .ssoLogin()
             .then(e=>{
                 Alert.alert(JSON.stringify(e));
             }).catch(e=>{
@@ -55,18 +55,15 @@ class Home extends PureComponent {
 
 
     shareToQQ = ()=>{
-        // RNInterestQQ.shareToQQ(
-        //     "这里是分享标题",
-        //     "desc",
-        //     "http://text/plain",
-        //     "",
-        //     "appname",
-        //     0
-        // ).catch(e=>{
-        //     console.log(e);
-        // });
-
-        RNInterestQQ.shareText("123213123",0)
+        RNInterestQQ.shareToQQ(
+            "这里是分享标题",
+            "desc",
+            "http://text/plain",
+            "",
+            "appname"
+        ).catch(e=>{
+            console.log(e);
+        });
     };
 
     render() {
