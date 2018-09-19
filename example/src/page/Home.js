@@ -16,9 +16,7 @@ import {
     HomeRow
 } from "../components"
 
-const {
-    RNInterestQQ
-}  =NativeModules;
+import * as RNInterestQQ from "react-native-interest-qq"
 
 class Home extends PureComponent {
     constructor(props) {
@@ -35,7 +33,7 @@ class Home extends PureComponent {
 
     login = ()=>{
         RNInterestQQ
-            .ssoLogin()
+            .login()
             .then(e=>{
                 Alert.alert(JSON.stringify(e));
             }).catch(e=>{
