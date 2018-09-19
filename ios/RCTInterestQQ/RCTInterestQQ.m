@@ -632,7 +632,7 @@ RCT_EXPORT_METHOD(shareVideo:(NSString *)videoUrl
 #pragma mark - TencentSessionDelegate
 - (void)tencentDidLogin {
     if (tencentOAuth.accessToken && 0 != [tencentOAuth.accessToken length] && loginResolve) {
-        NSMutableDictionary *result = [[NSMutableDictionary alloc]init];
+        NSMutableDictionary *result = [[NSMutableDictionary alloc] init];
         if (tencentOAuth.authMode == kAuthModeServerSideCode ) {
             [result setObject:[tencentOAuth passData] forKey:@"passData"];
             [result setObject:tencentOAuth.accessToken forKey:@"severCode"];
@@ -644,6 +644,8 @@ RCT_EXPORT_METHOD(shareVideo:(NSString *)videoUrl
             [result setObject:tencentOAuth.openId forKey:@"openid"];
         }
         NSString *resultJson = [Tools convertToJsonData:result];
+        
+        // 这里可以直接返回字典哦
         loginResolve(resultJson);
         loginReject = nil;
     } else {
