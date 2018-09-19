@@ -29,20 +29,48 @@ NSString *appId = @"";
     RCTPromiseRejectBlock shareReject;
 }
 
-RCT_EXPORT_MODULE()
+RCT_EXPORT_MODULE(RNInterestQQ)
 
-- (instancetype)init {
-    self = [super init];
-    if (self) {
-        [self initTencentOAuth];
+//- (instancetype)init {
+//    self = [super init];
+//    if (self) {
+//        [self initTencentOAuth];
+//        [[NSNotificationCenter defaultCenter] addObserver:self
+//                                                 selector:@selector(handleOpenURLNotification:)
+//                                                     name:@"RCTOpenURLNotification"
+//                                                   object:nil];
+//    }
+//    return self;
+//}
+#pragma mark -- 单例
+static RCTInterestQQ *sharedInstance = nil;
++ (id)allocWithZone:(NSZone *)zone {
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        sharedInstance = [super allocWithZone:zone];
+        [sharedInstance initTencentOAuth];
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(handleOpenURLNotification:)
                                                      name:@"RCTOpenURLNotification"
                                                    object:nil];
-    }
-    return self;
+    });
+    return sharedInstance;
 }
 
++(instancetype)shareViewCtrl
+{
+    // 最好用self 用Tool他的子类调用时会出现错误
+    return [[self alloc]init];
+}
+// 为了严谨，也要重写copyWithZone 和 mutableCopyWithZone
+-(id)copyWithZone:(NSZone *)zone
+{
+    return sharedInstance;
+}
+-(id)mutableCopyWithZone:(NSZone *)zone
+{
+    return sharedInstance;
+}
 - (NSArray<NSString *> *)supportedEvents {
     return @[];
 }
@@ -56,6 +84,7 @@ RCT_EXPORT_MODULE()
              @"Favorite": @(Favorite),
              };
 }
+#pragma mark 监测是否安装QQ
 RCT_EXPORT_METHOD(checkClientInstalled
                   :(RCTPromiseResolveBlock)resolve
                   :(RCTPromiseRejectBlock)reject) {
@@ -65,8 +94,8 @@ RCT_EXPORT_METHOD(checkClientInstalled
         reject(@"404", QQ_NOT_INSTALLED, nil);
     }
 }
-
-RCT_EXPORT_METHOD(ssoLogin
+#pragma mark 登录
+RCT_EXPORT_METHOD(login
                   : (RCTPromiseResolveBlock)resolve
                   : (RCTPromiseRejectBlock)reject) {
     if (nil == tencentOAuth) {
@@ -92,28 +121,71 @@ RCT_EXPORT_METHOD(ssoLogin
     [tencentOAuth setAuthShareType:AuthShareType_QQ];
     [tencentOAuth authorize:permissions];
 }
-
-RCT_EXPORT_METHOD(logout
+#pragma mark 登出
+RCT_EXPORT_METHOD(loginOut
                   :(RCTPromiseResolveBlock)resolve
                   :(RCTPromiseRejectBlock)reject) {
     logoutResolve = resolve;
     logoutReject = reject;
     [tencentOAuth logout: self];
 }
-
+#pragma mark 查看Token
+RCT_EXPORT_METHOD(viewCachedToken:(RCTPromiseResolveBlock)resolve
+                  :(RCTPromiseRejectBlock)reject){
+    NSString *token = [tencentOAuth getCachedToken];
+    NSString *openid = [tencentOAuth getCachedOpenID];
+    NSDate *exp = [tencentOAuth getCachedExpirationDate];
+    BOOL isValid = [tencentOAuth isCachedTokenValid];
+    NSNumber *isValidNum = [NSNumber numberWithBool:isValid];
+    if (token && openid && exp) {
+        NSMutableDictionary *dic = [[NSMutableDictionary alloc]init];
+        [dic setObject:token forKey:@"token"];
+        [dic setObject:openid forKey:@"openid"];
+//        [dic setObject:expTime forKey:@"exp"];
+        [dic setObject:@(exp.timeIntervalSince1970*1000) forKey:@"exp"];
+        [dic setObject:isValidNum forKey:@"isValid"];
+        NSString *resultJson = [Tools convertToJsonData:dic];
+        resolve(resultJson);
+    }else{
+//        wx-todo：错误码和抛出错误需要协定
+        reject(@"404",@"没有token",nil);
+    }
+    
+}
+#pragma mark 删除Token
+RCT_EXPORT_METHOD(deleteCachedToken
+                  :(RCTPromiseResolveBlock)resolve
+                  :(RCTPromiseRejectBlock)reject) {
+    BOOL ret =  [tencentOAuth deleteCachedToken];
+    NSNumber *retNum = [NSNumber numberWithBool:ret];
+    NSMutableDictionary *dic = [[NSMutableDictionary alloc]init];
+    [dic setObject:retNum forKey:@"result"];
+    NSString *resultJson =[Tools convertToJsonData:dic];
+    resolve(resultJson);
+}
+#pragma mark 分享文本
 RCT_EXPORT_METHOD(shareText:(NSString *)text
-                  shareScene:(QQShareScene)scene
+                  shareScene:(NSNumber *_Nonnull)scene
                   :(RCTPromiseResolveBlock)resolve
                   :(RCTPromiseRejectBlock)reject) {
     shareReject = reject;
     shareResolve = resolve;
-    [self shareObjectWithData:@{@"text":text} Type:TextMessage Scene:scene];
+    if (!text) {
+        shareReject(@"404",@"没有token",nil);
+    }else{
+        [self shareObjectWithData:@{@"text":text} Type:TextMessage Scene:[[NSString stringWithFormat:@"%@",scene] integerValue]];
+    }
 }
 
+#pragma mark 分享图片
+/**
+ 分享图片
+ image：本地图片地址，网路图片地址，base64目前解析有问题
+ */
 RCT_EXPORT_METHOD(shareImage:(NSString *)image
                   title:(NSString *)title
                   description:(NSString *)description
-                  shareScene:(QQShareScene)scene
+                  shareScene:(NSNumber *_Nonnull)scene
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
     shareReject = reject;
@@ -126,14 +198,20 @@ RCT_EXPORT_METHOD(shareImage:(NSString *)image
                                     @"title":title,
                                     @"description":description}
                              Type:ImageMesssage
-                            Scene:scene];
+                            Scene:[[NSString stringWithFormat:@"%@",scene] integerValue]];
     }
 }
+
+#pragma mark 分享新闻
+/**
+ 分享图片
+ image：本地图片地址，网路图片地址，base64目前解析有问题
+ */
 RCT_EXPORT_METHOD(shareNews:(NSString *)url
                   image:(NSString *)image
                   title:(NSString *)title
                   description:(NSString *)description
-                  shareScene:(QQShareScene)scene
+                  shareScene:(NSNumber *_Nonnull)scene
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
     shareReject = reject;
@@ -147,52 +225,71 @@ RCT_EXPORT_METHOD(shareNews:(NSString *)url
                                     @"title":title,
                                     @"description":description}
                              Type:NewsMessageWithLocalImage
-                            Scene:scene];
+                            Scene:[[NSString stringWithFormat:@"%@",scene] integerValue]];
     }
 }
-RCT_EXPORT_METHOD(shareAudio:(NSString *)previewUrl
+#pragma mark 分享音频
+/**
+ 分享音频
+ @param audioUrl 音频内容的目标URL（点击新闻进入的内容）
+ @param flashUrl 外部点击播放按钮的流媒体url(远程url，不得使用本地文件)
+ @param image 播放图片
+ @param title 分享内容的标题
+ @param description 分享内容的描述
+ 
+ */
+RCT_EXPORT_METHOD(shareAudio:(NSString *)audioUrl
                   flashUrl:(NSString *)flashUrl
                   image:(NSString *)image
                   title:(NSString *)title
                   description:(NSString *)description
-                  shareScene:(QQShareScene)scene
+                  shareScene:(NSNumber *_Nonnull)scene
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
     shareReject = reject;
     shareResolve = resolve;
+//    flashUrl = @"http://ra01.sycdn.kuwo.cn/resource/n3/32/56/3260586875.mp3";
     NSData *imageData = [self processImage:image];
     if (!imageData) {
         shareReject(@"500", QQ_IMAGE_PARAM_INCORRECT, nil);
     } else {
-        [self shareObjectWithData:@{@"url":previewUrl,
+        [self shareObjectWithData:@{@"url":audioUrl,
                                     @"flashUrl":flashUrl,
                                     @"image":imageData,
                                     @"title":title,
                                     @"description":description}
                              Type:AudioMessage
-                            Scene:scene];
+                            Scene:[[NSString stringWithFormat:@"%@",scene] integerValue]];
     }
 }
-
-RCT_EXPORT_METHOD(shareVideo:(NSString *)previewUrl
+#pragma mark 分享视频
+/**
+ 分享视频
+ @param videoUrl 视频新闻内容的目标URL（点击新闻进入的内容）
+ @param flashUrl 外部点击播放按钮的流媒体url(远程url，不得使用本地文件)
+ @param image 播放图片
+ @param title 分享内容的标题
+ @param description 分享内容的描述
+ 
+ */
+RCT_EXPORT_METHOD(shareVideo:(NSString *)videoUrl
                   flashUrl:(NSString *)flashUrl
                   image:(NSString *)image
-                  imageType:(NSInteger)type
                   title:(NSString *)title
                   description:(NSString *)description
-                  shareScene:(QQShareScene)scene
+                  shareScene:(NSNumber *_Nonnull)scene
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
     shareReject = reject;
     shareResolve = resolve;
     NSData *imageData = [self processImage:image];
-    [self shareObjectWithData:@{@"url":previewUrl,
+    [self shareObjectWithData:@{@"url":videoUrl,
                                 @"flashUrl":flashUrl,
                                 @"image":imageData,
                                 @"title":title,
                                 @"description":description}
                          Type:VideoMessage
-                        Scene:scene];
+                        Scene:[[NSString stringWithFormat:@"%@",scene] integerValue]];
 }
 
 - (void)shareTextToQQZone:(NSString *)text {
@@ -278,7 +375,7 @@ RCT_EXPORT_METHOD(shareVideo:(NSString *)previewUrl
             NSURL *url = [NSURL URLWithString:[shareData objectForKey:@"url"]];
             NSString *title = [shareData objectForKey:@"title"];
             NSString *description = [shareData objectForKey:@"description"];
-            NSURL *flashUrl = [NSURL URLWithString:[shareData objectForKey:@"url"]];
+            NSURL *flashUrl = [NSURL URLWithString:[shareData objectForKey:@"flashUrl"]];
             QQApiAudioObject *audioObj = [QQApiAudioObject objectWithURL:url
                                                                    title:title
                                                              description:description
@@ -305,7 +402,7 @@ RCT_EXPORT_METHOD(shareVideo:(NSString *)previewUrl
             NSURL *url = [NSURL URLWithString:[shareData objectForKey:@"url"]];
             NSString *title = [shareData objectForKey:@"title"];
             NSString *description = [shareData objectForKey:@"description"];
-            NSURL *flashUrl = [NSURL URLWithString:[shareData objectForKey:@"url"]];
+            NSURL *flashUrl = [NSURL URLWithString:[shareData objectForKey:@"flashUrl"]];
             QQApiVideoObject *videoObj = [QQApiVideoObject objectWithURL:url
                                                                    title:title
                                                              description:description
@@ -438,14 +535,14 @@ RCT_EXPORT_METHOD(shareVideo:(NSString *)previewUrl
         }
     }
 }
-- (NSDictionary *)makeResultWithUserId:(NSString *)userId
-                           accessToken:(NSString *)accessToken
-                        expirationDate:(NSDate *)expirationDate {
-    NSDictionary *result = @{ @"userid" : userId,
-                              @"access_token" : accessToken,
-                              @"expires_time" : [NSString stringWithFormat:@"%f", [expirationDate timeIntervalSince1970] * 1000] };
-    return result;
-}
+//- (NSDictionary *)makeResultWithUserId:(NSString *)userId
+//                           accessToken:(NSString *)accessToken
+//                        expirationDate:(NSDate *)expirationDate {
+//    NSDictionary *result = @{ @"userid" : userId,
+//                              @"access_token" : accessToken,
+//                              @"expires_time" : [NSString stringWithFormat:@"%f", [expirationDate timeIntervalSince1970] * 1000] };
+//    return result;
+//}
 - (void)handleOpenURLNotification:(NSNotification *)notification {
     NSURL *url = [NSURL URLWithString:[notification userInfo][@"url"]];
     NSString *schemaPrefix = [@"tencent" stringByAppendingString:appId];
@@ -471,7 +568,7 @@ RCT_EXPORT_METHOD(shareVideo:(NSString *)previewUrl
         }
     }
 }
-
+#pragma mark - 图片处理
 - (NSData *)processImage:(NSString *)image {
     if ([self isBase64Data:image]) {
         return [[NSData alloc] initWithBase64EncodedString:image options:0];
@@ -535,10 +632,21 @@ RCT_EXPORT_METHOD(shareVideo:(NSString *)previewUrl
 #pragma mark - TencentSessionDelegate
 - (void)tencentDidLogin {
     if (tencentOAuth.accessToken && 0 != [tencentOAuth.accessToken length] && loginResolve) {
-        NSDictionary *result = [self makeResultWithUserId:tencentOAuth.openId
-                                              accessToken:tencentOAuth.accessToken
-                                           expirationDate:tencentOAuth.expirationDate];
-        loginResolve(result);
+        NSMutableDictionary *result = [[NSMutableDictionary alloc] init];
+        if (tencentOAuth.authMode == kAuthModeServerSideCode ) {
+            [result setObject:[tencentOAuth passData] forKey:@"passData"];
+            [result setObject:tencentOAuth.accessToken forKey:@"severCode"];
+        }
+        else
+        {
+            [result setObject:[tencentOAuth passData] forKey:@"passData"];
+            [result setObject:tencentOAuth.accessToken forKey:@"clientToken"];
+            [result setObject:tencentOAuth.openId forKey:@"openid"];
+        }
+        NSString *resultJson = [Tools convertToJsonData:result];
+        
+        // 这里可以直接返回字典哦
+        loginResolve(resultJson);
         loginReject = nil;
     } else {
         if (loginReject) {
@@ -548,7 +656,6 @@ RCT_EXPORT_METHOD(shareVideo:(NSString *)previewUrl
         }
     }
 }
-
 - (void)tencentDidLogout {
     if (logoutResolve) {
         tencentOAuth = nil;

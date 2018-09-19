@@ -2,26 +2,21 @@
  * Created by iwangx on 2018/8/27.
  */
 
-import React, {PureComponent} from "react"
+import React, { PureComponent } from 'react';
 
-import PropTypes from "prop-types"
+import PropTypes from 'prop-types';
 
 import {
     View,
     TouchableWithoutFeedback,
     StyleSheet,
     Text
-} from "react-native"
+} from 'react-native';
 
 class HomeRow extends PureComponent {
-
-    constructor(props) {
-        super(props);
-    }
-
     static propTypes = {
-        onPress:PropTypes.func,
-        text:PropTypes.string
+        onPress: PropTypes.func,
+        text: PropTypes.string
     };
 
     static defaultProps = {};
@@ -30,7 +25,7 @@ class HomeRow extends PureComponent {
 
     }
 
-    onPress=()=>{
+    onPress=() => {
         let {
             onPress
         } = this.props;
@@ -40,7 +35,6 @@ class HomeRow extends PureComponent {
     render() {
         const {
             props,
-            state
         } = this;
 
         let {
@@ -48,27 +42,27 @@ class HomeRow extends PureComponent {
         } = props;
 
         return (
-            <TouchableWithoutFeedback
-                onPress={this.onPress}
-            >
-                <View style={homeRowStyle.row}>
-                    <Text>{text}</Text>
-                </View>
-            </TouchableWithoutFeedback>
-        )
+          <TouchableWithoutFeedback
+            onPress={this.onPress}
+          >
+            <View style={homeRowStyle.row}>
+              <Text>{text}</Text>
+            </View>
+          </TouchableWithoutFeedback>
+        );
     }
 }
 
 const homeRowStyle = StyleSheet.create({
-    row:{
-        height:50,
-        flexDirection:"row",
-        alignItems:"center",
-        backgroundColor:"#fff",
-        borderBottomColor:"#ccc",
-        borderBottomWidth:1,
-        paddingLeft:10
+    row: {
+        height: 50,
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: '#fff',
+        borderBottomColor: '#ccc',
+        borderBottomWidth: 1,
+        paddingLeft: 10
     }
 });
 
-export default HomeRow
+export default HomeRow;

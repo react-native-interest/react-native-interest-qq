@@ -1,5 +1,5 @@
-import HomeRow from "./HomeRow/HomeRow";
+import HomeRow from './HomeRow/HomeRow';
 
 export {
     HomeRow
-}
+};

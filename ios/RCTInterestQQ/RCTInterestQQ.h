@@ -12,7 +12,7 @@
 #import <React/RCTBridge.h>
 #import <React/RCTEventEmitter.h>
 #import <React/RCTBridgeModule.h>
-
+#import "Tools.h"
 typedef NS_ENUM(NSInteger, QQShareScene) {
     QQ,
     QQZone,
@@ -27,6 +27,6 @@ typedef NS_ENUM(NSInteger, QQShareType) {
     VideoMessage,
 };
 
-@interface RCTInterestQQ : RCTEventEmitter <TencentSessionDelegate, QQApiInterfaceDelegate>
+@interface RCTInterestQQ : RCTEventEmitter <TencentSessionDelegate, QQApiInterfaceDelegate,TCAPIRequestDelegate>
 
 @end
