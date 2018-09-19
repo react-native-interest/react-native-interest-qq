@@ -28,32 +28,6 @@ export const isQQClientInstalled = RNInterestQQ.checkClientInstalled;
 export const login = RNInterestQQ.ssoLogin;
 
 /**
- * 退出qq登录
- */
-export const logout = RNInterestQQ.logout;
-
-export const shareScene = {'QQ': RNInterestQQ.QQ, 'QQZone': RNInterestQQ.QQZone, 'Favorite': RNInterestQQ.Favorite};
-
-/**
- * 分享一个文本到qq
- * @platform android
- * @param text 要分享的文本
- * @return 返回一个promise
- * */
-export function shareText(text) {
-    return RNInterestQQ.shareText(text,shareScene.QQ);
-}
-
-/**
- * 分享一个文本到qq空间
- * @param text 要分享的文本
- * @return 返回一个promise
- * */
-export function shareTextToQzone(text) {
-    return RNInterestQQ.shareText(text,shareScene.QQZone);
-}
-
-/**
  * 使用二维码登录
  * @platform ios
  * @return 返回一个promise
@@ -68,6 +42,11 @@ export function loginWithQRlogin() {
         })
     }
 }
+
+/**
+ * 退出qq登录
+ */
+export const logout = RNInterestQQ.logout;
 
 /**
  * 查看缓存Token
@@ -85,7 +64,6 @@ export function viewCachedToken() {
     }
 }
 
-
 /**
  * 删除缓存Token
  * @platform ios
@@ -102,6 +80,18 @@ export function deleteCachedToken() {
     }
 }
 
+export const shareScene = {'QQ': RNInterestQQ.QQ, 'QQZone': RNInterestQQ.QQZone, 'Favorite': RNInterestQQ.Favorite};
+
+/**
+ * 分享一个文本到qq
+ * @platform ios
+ * @param text 要分享的文本
+ * @return 返回一个promise
+ * */
+export function shareText(text) {
+    return RNInterestQQ.shareText(text,shareScene.QQ);
+}
+
 /**
  * 分享图片到qq
  * @param image 图片，可以是本地的，也可以上网上的
@@ -113,16 +103,6 @@ export function shareImage(image,title="",description="") {
 }
 
 /**
- * 分享图片到qq空间
- * @param image 图片，可以是本地的，也可以上网上的
- * @param title 分享标题
- * @param description 分享摘要
- * */
-export function shareImgToQZone(image,title="",description="") {
-    return RNInterestQQ.shareImage(image,title,description,shareScene.QQZone)
-}
-
-/**
  * 分享新闻到qq
  * @param url 要分享的url
  * @param image 分享的图片，可以是远程的也可以是本地的
@@ -131,18 +111,6 @@ export function shareImgToQZone(image,title="",description="") {
  * */
 export function shareNews(url,image,title,description="") {
     return RNInterestQQ.shareImage(url,image,title,description,shareScene.QQ)
-}
-
-
-/**
- * 分享新闻到qq空间
- * @param url 要分享的url
- * @param image 分享的图片，可以是远程的也可以是本地的
- * @param title 分享标题
- * @param description 分享摘要
- * */
-export function shareNewsToQzone(url,image,title,description="") {
-    return RNInterestQQ.shareImage(url,image,title,description,shareScene.QQZone)
 }
 
 /**
@@ -158,19 +126,6 @@ export function shareAudio(url,flashUrl,image,title,description="") {
 }
 
 /**
- * 分享音频到qq空间
- * @param url 要分享的url
- * @param flashUrl 要分享的播放文件的url
- * @param image 分享的图片，可以是远程的也可以是本地的
- * @param title 分享标题
- * @param description 分享摘要
- * */
-export function shareAudioToQzone(url,flashUrl,image,title,description="") {
-    return RNInterestQQ.shareAudio(url,flashUrl,image,title,description,shareScene.QQZone)
-}
-
-
-/**
  * 分享视频到qq
  * @platform ios
  * @param url 要分享的url
@@ -184,6 +139,69 @@ export function shareVideo(url,flashUrl,image,title,description="") {
 }
 
 /**
+ * 分享内容到qq
+ * @platform android
+ * @param title 标题
+ * @param desc 摘要
+ * @param url 分享链接
+ * @param imgUrl 分享的图片链接
+ * @param appName 分享的app名称
+ * */
+export function shareToQQ(title,desc="",url,imgUrl,appName) {
+    if(!isIOS){
+        return RNInterestQQ.shareToQQ(title,desc,url,image,appName);
+    }else{
+        return Promise.reject({
+            code:405,
+            message:PLATFORM_DOES_NOT_METHOD
+        })
+    }
+}
+
+/**
+ * 分享一个文本到qq空间
+ * @param text 要分享的文本
+ * @return 返回一个promise
+ * */
+export function shareTextToQzone(text) {
+    return RNInterestQQ.shareText(text,shareScene.QQZone);
+}
+
+/**
+ * 分享新闻到qq空间
+ * @param url 要分享的url
+ * @param image 分享的图片，可以是远程的也可以是本地的
+ * @param title 分享标题
+ * @param description 分享摘要
+ * */
+export function shareNewsToQzone(url,image,title,description="") {
+    return RNInterestQQ.shareImage(url,image,title,description,shareScene.QQZone)
+}
+
+
+/**
+ * 分享图片到qq空间
+ * @param image 图片，可以是本地的，也可以上网上的
+ * @param title 分享标题
+ * @param description 分享摘要
+ * */
+export function shareImgToQZone(image,title="",description="") {
+    return RNInterestQQ.shareImage(image,title,description,shareScene.QQZone)
+}
+
+/**
+ * 分享音频到qq空间
+ * @param url 要分享的url
+ * @param flashUrl 要分享的播放文件的url
+ * @param image 分享的图片，可以是远程的也可以是本地的
+ * @param title 分享标题
+ * @param description 分享摘要
+ * */
+export function shareAudioToQzone(url,flashUrl,image,title,description="") {
+    return RNInterestQQ.shareAudio(url,flashUrl,image,title,description,shareScene.QQZone)
+}
+
+/**
  * 分享视频到qq空间
  * @param url 要分享的url
  * @param flashUrl 要分享的播放文件的url
@@ -193,6 +211,25 @@ export function shareVideo(url,flashUrl,image,title,description="") {
  * */
 export function shareVideoToQzone(url,flashUrl,image,title,description="") {
     return RNInterestQQ.shareVideo(url,flashUrl,image,title,description,shareScene.QQZone)
+}
+
+/**
+ * 分享内容到qq空间
+ * @platform android
+ * @param title 标题
+ * @param desc 摘要
+ * @param url 分享链接
+ * @param imgUrlArr 图片列表
+ * */
+export function shareToQzone(title,desc="",url,imgUrlArr) {
+    if(!isIOS){
+        return RNInterestQQ.shareToQzone(title,desc,url,imgUrlArr);
+    }else{
+        return Promise.reject({
+            code:405,
+            message:PLATFORM_DOES_NOT_METHOD
+        })
+    }
 }
 
 /**
@@ -234,7 +271,7 @@ export function requestUnionId() {
 }
 
 /**
- * 一件加群
+ * 一键加群
  * @platform ios
  *
  * */
@@ -256,45 +293,6 @@ export function joinGroup() {
 export function gameConsortiumBindingGroup() {
     if(isIOS){
         return RNInterestQQ.gameConsortiumBindingGroup();
-    }else{
-        return Promise.reject({
-            code:405,
-            message:PLATFORM_DOES_NOT_METHOD
-        })
-    }
-}
-
-/**
- * 分享内容到qq
- * @platform android
- * @param title 标题
- * @param desc 摘要
- * @param url 分享链接
- * @param imgUrl 分享的图片链接
- * @param appName 分享的app名称
- * */
-export function shareToQQ(title,desc="",url,imgUrl,appName) {
-    if(!isIOS){
-        return RNInterestQQ.shareToQQ(title,desc,url,image,appName);
-    }else{
-        return Promise.reject({
-            code:405,
-            message:PLATFORM_DOES_NOT_METHOD
-        })
-    }
-}
-
-/**
- * 分享内容到qq空间
- * @platform android
- * @param title 标题
- * @param desc 摘要
- * @param url 分享链接
- * @param imgUrlArr 图片列表
- * */
-export function shareToQzone(title,desc="",url,imgUrlArr) {
-    if(!isIOS){
-        return RNInterestQQ.shareToQzone(title,desc,url,imgUrlArr);
     }else{
         return Promise.reject({
             code:405,
