@@ -4,7 +4,7 @@
 
 本项目由react-native兴趣交流群开源并维护（群号：831849780）
 
-目前基于QQ SDK（Android版本：xxx，iOS版本：V3.3.3）开发，为React Native开发者提供简单快捷的接入方式。我们将持续对该项目进行维护更新，如果有问题请在issuse提出。
+目前基于QQ SDK（Android版本：xxx，iOS版本：V3.3.3）开发，为React Native开发者提供简单快捷的接入方式。我们将持续对该项目进行维护更新，如果有问题请在issues提出。
 
 ## 安装
 
