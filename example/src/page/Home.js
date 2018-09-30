@@ -22,6 +22,7 @@ const {
 } = NativeModules;
 
 
+
 class Home extends PureComponent {
     constructor(props) {
         super(props);
@@ -49,18 +50,19 @@ class Home extends PureComponent {
     login = () => {
         RNInterestQQ
             .login()
-            .then((e) => {
-                Alert.alert(JSON.stringify(e));
-            }).catch((e) => {
-                Alert.alert(JSON.stringify(e));
+            .then(data=>{
+                Alert.alert(JSON.stringify(data));
+            }).catch(e=>{
+                Alert.alert(JSON.stringify(e))
         });
     };
 
     loginOut = () => {
         RNInterestQQ
+
             .loginout()
             .then((e) => {
-                Alert.alert(JSON.stringify(e));
+                  Alert.alert(JSON.stringify(e));
             }).catch((e) => {
             Alert.alert(JSON.stringify(e));
         });
