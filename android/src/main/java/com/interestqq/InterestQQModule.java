@@ -145,7 +145,7 @@ public class InterestQQModule extends ReactContextBaseJavaModule {
 
 
     @ReactMethod
-    public void ssoLogin(final Promise promise){
+    public void login(final Promise promise){
         final Activity currentActivity = getCurrentActivity();
         if (null == currentActivity) {
             promise.reject("405",ACTIVITY_DOES_NOT_EXIST);
@@ -194,6 +194,8 @@ public class InterestQQModule extends ReactContextBaseJavaModule {
         if(desc.equals("")){
             params.putString(QQShare.SHARE_TO_QQ_SUMMARY,  desc);
         }
+
+
         if(imgUrl.equals("")){
             if(URLUtil.isNetworkUrl(imgUrl)) {
                 params.putString(QQShare.SHARE_TO_QQ_IMAGE_URL,imgUrl);

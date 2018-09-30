@@ -35,8 +35,9 @@ class Home extends PureComponent {
     login = ()=>{
         RNInterestQQ
             .login()
-            .then(e=>{
-                Alert.alert(JSON.stringify(e));
+            .then(data=>{
+            	console.log('login', data);
+                Alert.alert(JSON.stringify(data));
             }).catch(e=>{
                 Alert.alert(JSON.stringify(e))
         });
@@ -44,7 +45,7 @@ class Home extends PureComponent {
 
     loginOut = ()=>{
         RNInterestQQ
-            .loginOut()
+            .logout()
             .then(e=>{
                 Alert.alert(JSON.stringify(e));
             }).catch(e=>{
@@ -57,8 +58,8 @@ class Home extends PureComponent {
         RNInterestQQ.shareToQQ(
             "这里是分享标题",
             "desc",
-            "http://text/plain",
-            "",
+            "https://mp.weixin.qq.com/s/eImQhwn-zP6hT2EmnWRcmg",
+            "http://www.mp4pa.com/uploads/allimg/201809/e1d82cddc3e35945.jpg",
             "appname"
         ).catch(e=>{
             console.log(e);

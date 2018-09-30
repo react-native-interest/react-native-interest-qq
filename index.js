@@ -25,7 +25,7 @@ const PLATFORM_DOES_NOT_METHOD = "Platform does not method.";
  * @return access_token
  * @return expires_time
  * */
-export const login = RNInterestQQ.ssoLogin;
+export const login = RNInterestQQ.login;
 
 /**
  * 使用二维码登录
