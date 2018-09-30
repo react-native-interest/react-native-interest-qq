@@ -15,6 +15,9 @@ const {
 } = NativeModules;
 
 export class QQShare extends PureComponent {
+    /** RNInterestQQ.Favorite 收藏
+     * RNInterestQQ.QQZone QQ空间
+     * RNInterestQQ.QQ QQ好友 */
     shareText = () => {
         RNInterestQQ
             .shareText('hello', RNInterestQQ.Favorite)

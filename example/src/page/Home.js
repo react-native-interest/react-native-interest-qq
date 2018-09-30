@@ -2,21 +2,25 @@
  * Created by iwangx on 2018/8/27.
  */
 
-import React, {PureComponent} from "react"
+import React, { PureComponent } from 'react';
 
-import PropTypes from "prop-types"
+import PropTypes from 'prop-types';
 
 import {
     View,
     NativeModules,
-    Alert
-} from "react-native"
-
+    Alert,
+    Text
+} from 'react-native';
 import {
     HomeRow
-} from "../components"
+} from '../components';
 
-import * as RNInterestQQ from "react-native-interest-qq"
+// import * as RNInterestQQ from 'react-native-interest-qq';
+const {
+    RNInterestQQ
+} = NativeModules;
+
 
 class Home extends PureComponent {
     constructor(props) {
@@ -31,54 +35,86 @@ class Home extends PureComponent {
 
     }
 
-    login = ()=>{
+    checkClientInstalled = () => {
+        RNInterestQQ
+            .checkClientInstalled()
+            .then((e) => {
+                Alert.alert(JSON.stringify(e));
+            })
+            .catch((e) => {
+                Alert.alert(JSON.stringify(e));
+            });
+    };
+
+    login = () => {
         RNInterestQQ
             .login()
-            .then(e=>{
+            .then((e) => {
                 Alert.alert(JSON.stringify(e));
-            }).catch(e=>{
-                Alert.alert(JSON.stringify(e))
+            }).catch((e) => {
+                Alert.alert(JSON.stringify(e));
         });
     };
 
-    loginOut = ()=>{
+    loginOut = () => {
         RNInterestQQ
-            .loginOut()
-            .then(e=>{
+            .loginout()
+            .then((e) => {
                 Alert.alert(JSON.stringify(e));
-            }).catch(e=>{
-            Alert.alert(JSON.stringify(e))
+            }).catch((e) => {
+            Alert.alert(JSON.stringify(e));
         });
     };
 
 
-<<<<<<< HEAD
     shareToQQ = () => {
-        // RNInterestQQ.shareToQQ(
-        //     "这里是分享标题",
-        //     "desc",
-        //     "http://text/plain",
-        //     "",
-        //     "appname",
-        //     0
-        // ).catch(e=>{
-        //     console.log(e);
-        // });
-
-        RNInterestQQ.shareText('123213123', 0);
-=======
-    shareToQQ = ()=>{
         RNInterestQQ.shareToQQ(
-            "这里是分享标题",
-            "desc",
-            "http://text/plain",
-            "",
-            "appname"
-        ).catch(e=>{
+            '这里是分享标题',
+            'desc',
+            'http://text/plain',
+            '',
+            'appname'
+        ).catch((e) => {
             console.log(e);
         });
->>>>>>> 6eb56078c5be4ebfa22ac7846b54964de198a5da
     };
+
+    viewCachedToken = () => {
+        RNInterestQQ
+            .viewCachedToken()
+            .then((e) => {
+                Alert.alert(JSON.stringify(e));
+            })
+            .catch((e) => {
+                Alert.alert(JSON.stringify(e));
+            });
+    };
+
+    deleteCachedToken = () => {
+        RNInterestQQ
+            .deleteCachedToken()
+            .then((e) => {
+                Alert.alert(JSON.stringify(e));
+            })
+            .catch((e) => {
+                Alert.alert(JSON.stringify(e));
+            });
+    };
+
+    pushToQQ = () => {
+        this.props.navigation.navigate('QQShare');
+    };
+
+    getUserInfo = () => {
+        RNInterestQQ
+            .getUserInfo()
+            .then((e) => {
+                Alert.alert(JSON.stringify(e));
+            })
+            .catch((e) => {
+                Alert.alert(JSON.stringify(e));
+            });
+    }
 
     render() {
         const {
@@ -87,22 +123,47 @@ class Home extends PureComponent {
         } = this;
 
         return (
-            <View>
-                <HomeRow
-                    text={"Login"}
-                    onPress={this.login}
-                />
-                <HomeRow
-                    text={"LoginOut"}
-                    onPress={this.loginOut}
-                />
-                <HomeRow
-                    text={"shareToQQ"}
-                    onPress={this.shareToQQ}
-                />
-            </View>
-        )
+          <View style={{ paddingTop: 20 }}>
+            <Text>登录相关</Text>
+            <HomeRow
+              text="checkClientInstalled"
+              onPress={this.checkClientInstalled}
+            />
+            <HomeRow
+              text="Login"
+              onPress={this.login}
+            />
+            <HomeRow
+              text="LoginOut"
+              onPress={this.loginOut}
+            />
+            <HomeRow
+              text="shareToQQ"
+              onPress={this.shareToQQ}
+            />
+
+            <Text>Token相关</Text>
+            <HomeRow
+              text="查看缓存Token"
+              onPress={this.viewCachedToken}
+            />
+            <HomeRow
+              text="删除缓存Token"
+              onPress={this.deleteCachedToken}
+            />
+            <Text>API</Text>
+            <HomeRow
+              text="QQ、QQZone、Favorite"
+              onPress={this.pushToQQ}
+            />
+
+            <HomeRow
+              text="获取用户信息"
+              onPress={this.getUserInfo}
+            />
+          </View>
+        );
     }
 }
 
-export default Home
+export default Home;

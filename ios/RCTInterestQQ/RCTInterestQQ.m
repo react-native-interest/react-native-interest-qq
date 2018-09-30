@@ -27,6 +27,7 @@ NSString *appId = @"";
     RCTPromiseRejectBlock logoutReject;
     RCTPromiseResolveBlock shareResolve;
     RCTPromiseRejectBlock shareReject;
+    RCTPromiseResolveBlock userReslove;
 }
 
 RCT_EXPORT_MODULE(RNInterestQQ)
@@ -122,12 +123,22 @@ RCT_EXPORT_METHOD(login
     [tencentOAuth authorize:permissions];
 }
 #pragma mark 登出
-RCT_EXPORT_METHOD(loginOut
+RCT_EXPORT_METHOD(loginout
                   :(RCTPromiseResolveBlock)resolve
                   :(RCTPromiseRejectBlock)reject) {
     logoutResolve = resolve;
     logoutReject = reject;
     [tencentOAuth logout: self];
+}
+#pragma mark 查看用户信息
+RCT_EXPORT_METHOD(getUserInfo:(RCTPromiseResolveBlock)resolve
+                  :(RCTPromiseRejectBlock)reject){
+//    getUserInfo
+    if ([tencentOAuth getUserInfo] == NO) {
+        reject(@"404",@"查询用户信息失败",nil);
+    }else{
+        userReslove = resolve;
+    }
 }
 #pragma mark 查看Token
 RCT_EXPORT_METHOD(viewCachedToken:(RCTPromiseResolveBlock)resolve
@@ -144,8 +155,8 @@ RCT_EXPORT_METHOD(viewCachedToken:(RCTPromiseResolveBlock)resolve
 //        [dic setObject:expTime forKey:@"exp"];
         [dic setObject:@(exp.timeIntervalSince1970*1000) forKey:@"exp"];
         [dic setObject:isValidNum forKey:@"isValid"];
-        NSString *resultJson = [Tools convertToJsonData:dic];
-        resolve(resultJson);
+
+        resolve(dic);
     }else{
 //        wx-todo：错误码和抛出错误需要协定
         reject(@"404",@"没有token",nil);
@@ -160,8 +171,8 @@ RCT_EXPORT_METHOD(deleteCachedToken
     NSNumber *retNum = [NSNumber numberWithBool:ret];
     NSMutableDictionary *dic = [[NSMutableDictionary alloc]init];
     [dic setObject:retNum forKey:@"result"];
-    NSString *resultJson =[Tools convertToJsonData:dic];
-    resolve(resultJson);
+
+    resolve(dic);
 }
 #pragma mark 分享文本
 RCT_EXPORT_METHOD(shareText:(NSString *)text
@@ -629,6 +640,8 @@ RCT_EXPORT_METHOD(shareVideo:(NSString *)videoUrl
 - (void)isOnlineResponse:(NSDictionary *)response {
 }
 
+
+
 #pragma mark - TencentSessionDelegate
 - (void)tencentDidLogin {
     if (tencentOAuth.accessToken && 0 != [tencentOAuth.accessToken length] && loginResolve) {
@@ -639,20 +652,19 @@ RCT_EXPORT_METHOD(shareVideo:(NSString *)videoUrl
         }
         else
         {
-            [result setObject:[tencentOAuth passData] forKey:@"passData"];
-            [result setObject:tencentOAuth.accessToken forKey:@"clientToken"];
+            [result addEntriesFromDictionary:[tencentOAuth passData]];
+            [result setObject:tencentOAuth.accessToken forKey:@"access_token"];
             [result setObject:tencentOAuth.openId forKey:@"openid"];
         }
-        NSString *resultJson = [Tools convertToJsonData:result];
+
         
         // 这里可以直接返回字典哦
-        loginResolve(resultJson);
+        loginResolve(result);
         loginReject = nil;
     } else {
         if (loginReject) {
             loginReject(@"600", QQ_LOGIN_ERROR, nil);
             loginResolve = nil;
-            logoutReject = nil;
         }
     }
 }
@@ -678,6 +690,12 @@ RCT_EXPORT_METHOD(shareVideo:(NSString *)videoUrl
         loginResolve = nil;
         loginReject = nil;
     }
+}
+#pragma mark 获取用户信息接口回调
+- (void)getUserInfoResponse:(APIResponse*) response{
+    NSDictionary *message = response.jsonResponse;
+    userReslove(message);
+    userReslove = nil;
 }
 
 - (void)dealloc {

@@ -11,7 +11,8 @@
 #import <React/RCTRootView.h>
 
 
-#import <RCTInterestQQ/RCTInterestQQ.h>
+//#import <RCTInterestQQ/RCTInterestQQ.h>
+#import <RCTInterestQQ.h>
 #import <TencentOpenAPI/TencentOAuth.h>
 #import <TencentOpenAPI/QQApiInterface.h>
 
