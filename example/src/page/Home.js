@@ -89,9 +89,6 @@ class Home extends PureComponent {
         this.props.navigation.navigate('QQShare');
     };
 
-    pushToQQZone = () => {
-
-    };
 
     shareToQQ = () => {
         // RNInterestQQ.shareToQQ(
