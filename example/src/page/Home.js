@@ -16,6 +16,7 @@ import {
     HomeRow
 } from "../components"
 
+// import * as RNInterestQQ from "../../../index";
 import * as RNInterestQQ from "react-native-interest-qq"
 
 class Home extends PureComponent {

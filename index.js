@@ -16,7 +16,7 @@ const PLATFORM_DOES_NOT_METHOD = "Platform does not method.";
  * 检测是否安装了qq
  * @return 返回一个promise
  * */
-export const isQQClientInstalled = RNInterestQQ.checkClientInstalled;
+// export const isQQClientInstalled = RNInterestQQ.checkClientInstalled;
 
 /**
  * 调起qq登录
