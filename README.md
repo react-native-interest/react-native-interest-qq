@@ -57,12 +57,12 @@ import * as RNInterestQQ from "react-native-interest-qq"
 | [分享图片到QZone](#15)               |  ✅   |    ✅    | shareImgToQZone            |
 | [分享音频到QZone](#16) | ✅ |   ✅      | shareAudioToQzone |
 | [分享视频到QZone](#17)          | ✅ |     ✅    | shareVideoToQZone |
-| [分享内容到QZone](#18)               |  ❌   |    ✅    | shareToQzone               |
-| [分享文件（数据线）](#19)            |  ✅   |    ❌    | shareFile                  |
-| [添加好友](#20)                      |  ✅   |    ❌    | addFriend                  |
-| [获取UnionId](#21)  | ✅ |     ✅     | requestUnionId |
-| [一键加群](#22) | ✅ | ❌ | joinGroup |
-| [游戏绑定公会群](#23) | ✅ | ❌ | gameConsortiumBindingGroup |
+| [分享内容到QZone](#18)               |  ✅   |    ✅    | shareToQzone               |
+| [分享文件（数据线）](#19)            |  ❌ |    ❌    | shareFile                  |
+| [添加好友](#20)                      |  ❌  |    ❌    | addFriend                  |
+| [获取UnionId](#21)  | ❌ |     ✅     | requestUnionId |
+| [一键加群](#22) | ❌ | ❌ | joinGroup |
+| [游戏绑定公会群](#23) |❌ | ❌ | gameConsortiumBindingGroup |
 <h4 id="1">检查是否安装QQ</h4>
 
 检查改手机中是否安装了QQ
